@@ -9,6 +9,7 @@ namespace XASM.VirtualMachine
     public class virtualmachine
     {
         #region runtime config
+        bool isVerbose;
         bool isWriteStack;
         TextReader inputStream;
         TextWriter outputStream;
@@ -183,11 +184,12 @@ namespace XASM.VirtualMachine
             script.Load(bytecode);
         }
 
-        public virtualmachine(TextWriter output = null,TextReader input = null,bool isWriteStack = false)
+        public virtualmachine(TextWriter output = null,TextReader input = null,bool isWriteStack = false,bool isVerbose = false)
         {
             outputStream = output != null ? output : Console.Out;
             inputStream = input != null ? input : Console.In;
             this.isWriteStack = isWriteStack;
+            this.isVerbose = isVerbose;
         }
 
         public void Load(Script script)
@@ -640,16 +642,9 @@ namespace XASM.VirtualMachine
                     #endregion
 
                     case OpCode.ret:
-                        try
-                        {
-                            //jump back to caller
-                            instrCounter = stack[topStackIndex - currFunc.varCount - 1].i;
-                            isJump = true;
-                        }
-                        catch
-                        {
-                            Console.WriteLine(stacklog.ToString());
-                        }
+                        //jump back to caller
+                        instrCounter = stack[topStackIndex - currFunc.varCount - 1].i;
+                        isJump = true;
 
                         //pop currfunc stack frame
                         PopStackFrame();

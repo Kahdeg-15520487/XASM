@@ -43,12 +43,15 @@ public class Parser {
 	public Token la;   // lookahead token
 	int errDist = minErrDist;
 
+	public bool verbose;
+
 -->declarations
 
-	public Parser(Scanner scanner, ScriptEmitter emitter, Errors errorsStream) {
+	public Parser(Scanner scanner, ScriptEmitter emitter, Errors errorsStream,bool verbose = false) {
 		this.scanner = scanner;
 		this.emitter = emitter;
 		errors = errorsStream;
+		this.verbose = verbose;
 	}
 
 	void SynErr (int n) {
