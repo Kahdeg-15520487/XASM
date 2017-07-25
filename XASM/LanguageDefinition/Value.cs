@@ -63,7 +63,7 @@
             s = other.s;
             arrid = other.arrid;
         }
-        void Init()
+        private void Init()
         {
             i = 0;
             f = 0;
@@ -72,7 +72,10 @@
             arrid = 0;
         }
 
-        //make this Value object the same as other
+        /// <summary>
+        /// Assigns to the value of other.
+        /// </summary>
+        /// <param name="other">The other value.</param>
         public void Assign(Value other)
         {
             type = other.type;
@@ -83,7 +86,10 @@
             arrid = other.arrid;
         }
 
-        //only copy the content of other
+        /// <summary>
+        /// Copies value of other.
+        /// </summary>
+        /// <param name="other">The other value.</param>
         public void Copy(Value other)
         {
             i = other.i;
@@ -103,6 +109,72 @@
         public bool IsType(ValType type)
         {
             return this.type == type;
+        }
+
+        /// <summary>
+        /// Determines whether this instance is number.
+        /// </summary>
+        /// <returns>
+        ///   <c>true</c> if this instance is number; otherwise, <c>false</c>.
+        /// </returns>
+        public bool IsNumber()
+        {
+            return type == ValType.intergerLiteral || type == ValType.floatLiteral;
+        }
+
+        /// <summary>
+        /// Determines whether this instance is letter.
+        /// </summary>
+        /// <returns>
+        ///   <c>true</c> if this instance is letter; otherwise, <c>false</c>.
+        /// </returns>
+        public bool IsLetter()
+        {
+            return type == ValType.charLiteral || type == ValType.stringLiteral;
+        }
+
+        /// <summary>
+        /// Determines whether this instance is interger.
+        /// </summary>
+        /// <returns>
+        ///   <c>true</c> if this instance is interger; otherwise, <c>false</c>.
+        /// </returns>
+        public bool IsInterger()
+        {
+            return type == ValType.intergerLiteral;
+        }
+
+        /// <summary>
+        /// Determines whether this instance is float.
+        /// </summary>
+        /// <returns>
+        ///   <c>true</c> if this instance is float; otherwise, <c>false</c>.
+        /// </returns>
+        public bool IsFloat()
+        {
+            return type == ValType.floatLiteral;
+        }
+
+        /// <summary>
+        /// Determines whether this instance is character.
+        /// </summary>
+        /// <returns>
+        ///   <c>true</c> if this instance is character; otherwise, <c>false</c>.
+        /// </returns>
+        public bool IsChar()
+        {
+            return type == ValType.charLiteral;
+        }
+
+        /// <summary>
+        /// Determines whether this instance is string.
+        /// </summary>
+        /// <returns>
+        ///   <c>true</c> if this instance is string; otherwise, <c>false</c>.
+        /// </returns>
+        public bool IsString()
+        {
+            return type == ValType.stringLiteral;
         }
 
         public override string ToString()

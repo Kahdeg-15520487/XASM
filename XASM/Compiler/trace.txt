@@ -246,20 +246,20 @@ Graph nodes:
  240 sem                -242               8141    0
  241 alt                -242     0   239         198
  242 iter                243     0   234           0
- 243 sem                 244               8185    0
- 244 t    closeBrace     245                     201
- 245 sem                 246               8261    0
- 246 sem                   0               9059    0
- 247 sem                 248               9146    0
- 248 sem                 255               9238    0
- 249 nt   variableDecl   250               9316  225
- 250 sem                -255               9335    0
- 251 nt   functionDecl   252               9414  227
- 252 sem                -255               9451    0
- 253 alt                -255   254   249         225
- 254 alt                -255     0   251         227
+ 243 sem                 244               8240    0
+ 244 t    closeBrace     245                     202
+ 245 sem                 246               8316    0
+ 246 sem                   0               9114    0
+ 247 sem                 248               9201    0
+ 248 sem                 255               9293    0
+ 249 nt   variableDecl   250               9371  226
+ 250 sem                -255               9390    0
+ 251 nt   functionDecl   252               9469  228
+ 252 sem                -255               9506    0
+ 253 alt                -255   254   249         226
+ 254 alt                -255     0   251         228
  255 iter                256     0   253           0
- 256 sem                   0               9898    0
+ 256 sem                   0               9953    0
 
 
 First: node = 5
@@ -769,11 +769,11 @@ Cross reference list:
   "var"         112
   "xor"         145
   charLiteral    84
-  closeBrace    201
+  closeBrace    202
   closeBracket  107  118
   colon         129
   floatLiteral   83
-  functionDecl -184  227
+  functionDecl -184  228
   ident          88
   identifier    -87   95  105  112  123  129  150  151  154  164  166  168  170
                 172  174  188
@@ -789,8 +789,8 @@ Cross reference list:
                 170  170  172  172  174  174  176  176  176  178  178  178
   parameterDec -122  193
   stringLitera   85
-  variableDecl -111  195  225
-  XASM         -221
+  variableDecl -111  195  226
+  XASM         -222
 
 
 
@@ -1675,7 +1675,7 @@ Symbol Table:
   5 linelabelDec   nt   true     39 false   128 fixedToken
   6 instruction    nt   true     52 false   131 fixedToken
   7 functionDecl   nt   true    226 false   184 fixedToken
-  8 XASM           nt   false   247 true    221 fixedToken
+  8 XASM           nt   false   247 true    222 fixedToken
 
 Literal Tokens:
 --------------

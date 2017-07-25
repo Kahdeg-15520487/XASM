@@ -196,6 +196,7 @@ functionDeclare <out Function func>						(. string name; string funcname = strin
 	|
 		linelabelDeclare <out name>						(. linelabels.Add(name,entry + instrs.Count); .)
 	|	instruction	<out instr>							(. instrs.Add(instr); .)
+//todo check push pop and callhost to make stack safe
 	}
 														(. instrs.Add(new Instruction(OpCode.ret)); .)
 	closeBrace											

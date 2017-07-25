@@ -46,13 +46,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="compiler.cs" />
+    <Compile Include="Compiler\compiler.cs" />
     <Compile Include="Compiler\Parser.cs">
       <DependentUpon>XASM.atg</DependentUpon>
     </Compile>
     <Compile Include="Compiler\Scanner.cs">
       <DependentUpon>XASM.atg</DependentUpon>
     </Compile>
+    <Compile Include="LanguageDefinition\HostAPIAttribute.cs" />
     <Compile Include="LanguageDefinition\InstructionExtensionMethod.cs" />
     <Compile Include="LanguageDefinition\Function.cs" />
     <Compile Include="LanguageDefinition\Instruction.cs" />
@@ -61,7 +62,8 @@
     <Compile Include="Compiler\ScriptEmitter.cs" />
     <Compile Include="LanguageDefinition\Value.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="virtualmachine.cs" />
+    <Compile Include="VirtualMachine\RuntimeError.cs" />
+    <Compile Include="VirtualMachine\virtualmachine.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

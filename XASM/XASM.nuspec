@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>Kahdeg</authors>
+    <owners>Kahdeg</owners>
+    <projectUrl>https://github.com/Kahdeg-15520487/XASM</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A scripting library. Use XASM language.</description>
+    <copyright>Copyright 2017</copyright>
+  </metadata>
+</package>
