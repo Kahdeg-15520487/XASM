@@ -1,0 +1,248 @@
+using System.Collections.Generic;
+
+// Set the name of your grammar here (and at the end of this grammar):
+COMPILER XASM
+
+// Add auxiliary methods and declaration here.
+
+	ScriptEmitter emitter;// = new ScriptEmit();
+	Scope global = new Scope();
+	Scope currScope;
+	Dictionary<string,int> lineLabels = new Dictionary<string,int>();
+
+// If you want your generated compiler case insensitive add the
+// keyword IGNORECASE here.
+IGNORECASE
+
+CHARACTERS
+// Add character set declarations here.
+// Examples:
+letter = 'A'..'Z' + 'a'..'z'.
+sign = "+-".
+digit = "0123456789".
+whitespace = ' '.
+comma = ','.
+dot = '.'.
+cr = '\r'.
+lf = '\n'.
+tab = '\t'.
+underscore = '_'.
+newLine = cr + lf.
+quote = "'".
+doublequote = '"'.
+
+
+TOKENS
+// Add token declarations here.
+// Example:
+ident = [{underscore}] letter {letter | digit | underscore}.
+intergerLiteral = [sign] digit {digit}.
+floatLiteral = [sign] digit {digit} dot digit {digit}.
+charLiteral	= quote letter quote.
+stringLiteral = doublequote letter {letter | digit | underscore | whitespace | comma} doublequote.
+
+colon = ':'.
+openBracket = "[".
+closeBracket = "]".
+openBrace = "{".
+closeBrace = "}".
+
+
+PRAGMAS
+// Add pragma declarations here.
+// Example:
+//   switch = '$' { digit | letter }. (. Optional semantic action .)
+
+
+// Add comments here.
+// Example for a multi-line block comment:
+//   COMMENTS FROM "/*" TO "*/" NESTED
+// Example for a single line comment:
+//   COMMENTS FROM "//" TO lf
+
+COMMENTS FROM ';' TO lf
+
+// Set the ignored characters (whitespaces) here, the blank character is
+// ignored by default.
+// Example, add line breaks to the ignore set.
+   IGNORE cr + lf +	whitespace + tab
+
+
+PRODUCTIONS
+
+// Add your productions here, one must have the same name as the grammar,
+// it will be the start Variable (entry point of your compiler).
+// Example:
+//   XASM = "BEGIN" { Statement } "END".
+//   Statement = ident "=" number { "+" number } .
+
+
+
+literal <out Value lit>									(. lit = new Value(); .)
+= intergerLiteral										(. lit = new Value(int.Parse(t.val)); .)
+| floatLiteral 											(. lit = new Value(float.Parse(t.val)); .)
+| charLiteral 											(. lit = new Value(char.Parse(t.val)); .)
+| stringLiteral											(. lit = new Value(emitter.AddString(t.val),ValType.stringLiteral); .).
+
+identifier<out string name>
+= ident													(. name = t.val; .).
+
+operand <out Value operand> 							(.
+															operand = new Value(); 
+															string name; Value lit;
+														.)
+=	literal	<out lit>									(. operand.Assign(lit); .)
+|	identifier <out name>								(. operand.type = ValType.stackReference;
+														   if (!currScope.ContainVariable(name) 
+																&& !currScope.ContainParameter(name)
+																&& (name.CompareTo("retval") != 0))
+														     SemErr(name + " is not defined");
+														   operand.s = name;
+														.)
+[	
+	openBracket 
+		( intergerLiteral
+		| identifier <out name>
+		) 
+	closeBracket
+]
+.
+
+variableDeclare <out string name>						(.  .)
+=	"var" identifier <out name>							(.  Value lit;
+															currScope.AddVariable(name);
+												System.Console.WriteLine(name + " " + (currScope.IsGlobalScope ? "global" : "local")); 
+														.)
+[
+	//array
+	openBracket intergerLiteral closeBracket		 	(.  .)
+]
+.
+
+parameterDeclare <out string name>
+= "param" identifier <out name>							(. currScope.AddParameter(name);
+														   System.Console.WriteLine(name + " param"); 
+														.)
+.
+
+linelabelDeclare <out string name> 
+= identifier<out name> colon							(.  .).
+
+instruction <out Instruction instr>						(. Value op1,op2,op3; 
+														   string name;
+														   instr = new Instruction(OpCode.ret);.)
+=  (
+	"mov" operand <out op1> ',' operand<out op2>		(. instr = new Instruction(OpCode.mov, op1 ,op2); .)
+
+|	"add" operand <out op1> ',' operand<out op2>		(. instr  = new Instruction(OpCode.add, op1,op2); .)
+|	"sub" operand <out op1> ',' operand<out op2>		(. instr  = new Instruction(OpCode.sub, op1,op2); .)
+|	"mul" operand <out op1> ',' operand<out op2>		(. instr  = new Instruction(OpCode.mul, op1,op2); .)
+|	"div" operand <out op1> ',' operand<out op2>		(. instr  = new Instruction(OpCode.div, op1,op2); .)
+|	"mod" operand <out op1> ',' operand<out op2>		(. instr  = new Instruction(OpCode.mod, op1,op2); .)
+|	"exp" operand <out op1> ',' operand<out op2>		(. instr  = new Instruction(OpCode.exp, op1,op2); .)
+|	"and" operand <out op1> ',' operand<out op2>		(. instr  = new Instruction(OpCode.and, op1,op2); .)
+|	"or"  operand <out op1> ',' operand<out op2>		(. instr  = new Instruction(OpCode.or, op1,op2); .)
+|	"xor" operand <out op1> ',' operand<out op2>		(. instr  = new Instruction(OpCode.xor, op1,op2); .)
+|	"shl" operand <out op1> ',' operand<out op2>		(. instr  = new Instruction(OpCode.shl, op1,op2); .)
+|	"shr" operand <out op1> ',' operand<out op2>		(. instr  = new Instruction(OpCode.shr, op1,op2); .)
+
+
+|	"call" identifier <out name>			(. instr  = new Instruction(OpCode.call, new Value(name,ValType.intergerLiteral)); .)
+|	"callhost" identifier <out name>		(. instr  = new Instruction(OpCode.callhost, new Value(emitter.AddHAPI(name))); .)
+|	"push" operand <out op1>							(. instr  = new Instruction(OpCode.push, op1); .)
+|	"pop" operand <out op1>								(. instr  = new Instruction(OpCode.pop, op1); .)
+|	"jmp" identifier <out name>							(. instr  = new Instruction(OpCode.jmp,new Value(name)); .)
+|	"neg" operand <out op1>								(. instr  = new Instruction(OpCode.neg, op1); .)
+|	"inc" operand <out op1>								(. instr  = new Instruction(OpCode.inc, op1); .)
+|	"dec" operand <out op1>								(. instr  = new Instruction(OpCode.dec, op1); .)
+|	"not" operand <out op1>								(. instr  = new Instruction(OpCode.not, op1); .)
+|	"pause" operand <out op1>							(. instr  = new Instruction(OpCode.pause, op1); .)
+|	"exit" operand <out op1>							(. instr  = new Instruction(OpCode.exit, op1); .)
+
+|	"ret"												(. instr  = new Instruction(OpCode.ret); .)
+
+|	"je" operand <out op1> ',' operand <out op2> ',' identifier <out name>
+													(. instr  = new Instruction(OpCode.je,op1,op2,new Value(name)); .)
+|	"jne" operand <out op1> ',' operand <out op2> ',' identifier <out name>
+													(. instr  = new Instruction(OpCode.jne,op1,op2,new Value(name)); .)
+|	"jg" operand <out op1> ',' operand <out op2> ',' identifier <out name>
+													(. instr  = new Instruction(OpCode.jg,op1,op2,new Value(name)); .)
+|	"jl" operand <out op1> ',' operand <out op2> ',' identifier <out name>
+													(. instr  = new Instruction(OpCode.jl,op1,op2,new Value(name)); .)
+|	"jge" operand <out op1> ',' operand <out op2> ',' identifier <out name>
+													(. instr  = new Instruction(OpCode.jge,op1,op2,new Value(name)); .)
+|	"jle" operand <out op1> ',' operand <out op2> ',' identifier <out name>
+													(. instr  = new Instruction(OpCode.jle,op1,op2,new Value(name)); .)
+|	"getchar" operand <out op1> ',' operand <out op2> ',' operand <out op3>
+													(. instr  = new Instruction(OpCode.getchar,op1,op2,op3); .)
+|	"setchar" operand <out op1> ',' operand <out op2> ',' operand <out op3>
+													(. instr  = new Instruction(OpCode.setchar,op1,op2,op3); .)
+)
+														(. .).
+
+
+functionDeclare <out Function func>						(. string name; string funcname = string.Empty; Instruction instr;
+														   List<Instruction> instrs = new List<Instruction>();
+														   Dictionary<string,int> linelabels = new Dictionary<string,int>();
+														   int paramCount = 0,varCount = 0,entry = emitter.CurrentLine;.)
+=	"func" identifier <out name>						(. currScope = global.AddScope(name);		//todo check function duplicate
+														   funcname = name; .)
+	openBrace
+
+	{
+		parameterDeclare <out name>						(. paramCount ++; .)
+	|
+		variableDeclare	<out name>						(. varCount ++;	.)
+	|
+		linelabelDeclare <out name>						(. linelabels.Add(name,entry + instrs.Count); .)
+	|	instruction	<out instr>							(. instrs.Add(instr); .)
+	}
+														(. instrs.Add(new Instruction(OpCode.ret)); .)
+	closeBrace											
+				(.	foreach (var kvp in linelabels){
+						emitter.AddLineLabel(kvp.Key,kvp.Value);
+					}
+					System.Console.WriteLine();
+					System.Console.WriteLine(currScope.ToString());
+					for (int ic = 0; ic< instrs.Count;ic++){
+						for (int oc = 0; oc<instrs[ic].operands.GetLength(0);oc++){
+							if (instrs[ic].operands[oc].type == ValType.stackReference){
+								if (currScope.ContainVariable(instrs[ic].operands[oc].s))
+									instrs[ic].operands[oc].i = currScope.GetStackIndexOfVariable(instrs[ic].operands[oc].s);
+								else instrs[ic].operands[oc].i = currScope.GetStackIndexOfParameter(instrs[ic].operands[oc].s);
+							}
+						}
+						emitter.AddInstruction(instrs[ic]);
+						System.Console.WriteLine(emitter.CurrentLine-1 + " : " + instrs[ic]);
+				}.)
+														(. func = new Function(entry,paramCount,varCount,funcname); .)
+.
+
+XASM=													(. string name; Function func; int globalDataSize = 0; currScope = global; .)
+													(. currScope.AddVariable("retval"); .)
+{
+//global variables
+	variableDeclare	<out name>							(. globalDataSize++; .)				//todo check variable duplicate
+|	
+	functionDeclare <out func>							(.  
+															int funcindex = emitter.AddFunction(func);
+															System.Console.WriteLine("entry : " + func.entryPoint);
+															System.Console.WriteLine(func.paramCount + " parameter");
+															System.Console.WriteLine(func.varCount + " local variable");
+														    if (string.Compare(func.funcName,"main")==0) {
+														      emitter.mainFuncIndex = funcindex;
+														   }
+														.)
+}
+														(. emitter.AddInstruction(new Instruction(OpCode.exit,new Value(0)));
+														   emitter.globalDataSize = globalDataSize; 
+														   System.Console.WriteLine("globalDataSize =" + emitter.globalDataSize);
+														   System.Console.WriteLine("mainFuncIndex =" + emitter.mainFuncIndex);
+														   
+														   
+														.)
+.
+
+// End of your compiler specification, make sure the name here matches
+// the grammar name at the start of this grammar.
+END XASM.
