@@ -10,7 +10,6 @@ namespace XASM.VirtualMachine
     {
         #region runtime config
         bool isVerbose;
-        bool isWriteStack;
         TextReader inputStream;
         TextWriter outputStream;
         #endregion
@@ -184,11 +183,10 @@ namespace XASM.VirtualMachine
             script.Load(bytecode);
         }
 
-        public virtualmachine(TextWriter output = null,TextReader input = null,bool isWriteStack = false,bool isVerbose = false)
+        public virtualmachine(TextWriter output = null,TextReader input = null,bool isVerbose = false)
         {
             outputStream = output != null ? output : Console.Out;
             inputStream = input != null ? input : Console.In;
-            this.isWriteStack = isWriteStack;
             this.isVerbose = isVerbose;
         }
 
@@ -675,7 +673,7 @@ namespace XASM.VirtualMachine
             //exit code
             Console.WriteLine("exit code : " + exitCode);
 
-            if (isWriteStack)
+            if (isVerbose)
             {
                 File.WriteAllText("stacklog.txt", stacklog.ToString());
             }

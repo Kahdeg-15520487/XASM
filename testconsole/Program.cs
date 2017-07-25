@@ -18,6 +18,9 @@ namespace testconsole
         [Option('o', "output", Required = false)]
         public string binaryname { get; set; }
 
+        [Option('v',"verbose",Required = false)]
+        public bool isverbose { get; set; }
+
         [Value(0, Required = true)]
         public string sourcecode { get; set; }
     }
@@ -44,10 +47,10 @@ namespace testconsole
             string sourcecode = arg.sourcecode;
             Script script;
             compiler compiler = new compiler();
-            script = compiler.Compile(sourcecode);
+            script = compiler.Compile(sourcecode,arg.isverbose);
             if (script != null)
             {
-                virtualmachine vm = new virtualmachine();
+                virtualmachine vm = new virtualmachine(isVerbose: arg.isverbose);
                 vm.Load(script);
 
                 Stopwatch sw = new Stopwatch();
