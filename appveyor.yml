@@ -12,7 +12,6 @@ platform: Any CPU
 configuration: Release
  
 build:
-  verbosity: detailed
   publish_nuget: true
  
 before_build:
