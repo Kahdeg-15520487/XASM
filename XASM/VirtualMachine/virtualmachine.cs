@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace XASM.VirtualMachine
@@ -9,13 +10,13 @@ namespace XASM.VirtualMachine
     public class virtualmachine
     {
         #region runtime config
-        bool isWriteStack;
+        bool isVerbose;
         TextReader inputStream;
         TextWriter outputStream;
         #endregion
 
         Script script;
-        Dictionary<string, Action> HAPI_table;        
+        Dictionary<HostAPILibrary, Dictionary<string, MethodInfo>> HAPI_table;
 
         /// <summary>
         /// debug information
@@ -23,8 +24,7 @@ namespace XASM.VirtualMachine
         StringBuilder stacklog = new StringBuilder();
 
         #region runtime info
-        public Value[] stack { get; private set; }
-        public int topStackIndex { get; private set; } = 0;
+        Stack stack;
         Stack<Function> functionStack;
         public Function currFunc
         {
@@ -43,6 +43,7 @@ namespace XASM.VirtualMachine
         public int exitCode { get; private set; } = 0;
         #endregion
 
+        #region test script
         public void InitTestScript()
         {
             string[] code;
@@ -182,82 +183,61 @@ namespace XASM.VirtualMachine
             var bytecode = script.Compile();
             script.Load(bytecode);
         }
+        #endregion
 
-        public virtualmachine(TextWriter output = null,TextReader input = null,bool isWriteStack = false)
+        public virtualmachine(TextWriter output = null,TextReader input = null,bool isVerbose = false)
         {
             outputStream = output != null ? output : Console.Out;
             inputStream = input != null ? input : Console.In;
-            this.isWriteStack = isWriteStack;
+            this.isVerbose = isVerbose;
         }
 
-        public void Load(Script script)
+        public void Load(Script script, params HostAPILibrary[] hapilib)
         {
             this.script = script;
             functionStack = new Stack<Function>();
+
+            stack = new Stack(script.globalDataSize);
+            InitHAPITable(hapilib);
             //InitTestScript();
         }
 
-        public void InitHAPITable()
+        #region HostAPItable initialization
+        private void InitHAPITable(HostAPILibrary[] hapilib)
         {
-            HAPI_table = new Dictionary<string, Action>();
-            HAPI_table.Add("Print", HAPI_Print);
-            HAPI_table.Add("Read", HAPI_Read);
+            HAPI_table = new Dictionary<HostAPILibrary, Dictionary<string, MethodInfo>>();
+            foreach (var lib in hapilib)
+            {
+                HAPI_table.Add(lib, new Dictionary<string, MethodInfo>());
+                foreach (MethodInfo hapi in GetHapiMethod(lib.GetType()))
+                {
+                    HAPI_table[lib].Add(hapi.Name, hapi);
+                }
+            }
         }
 
-        [HostAPI("Print")]
-        private void HAPI_Print()
+        private IEnumerable<MethodInfo> GetHapiMethod(Type hapilib)
         {
-            Value temp = ResolveValue(Pop());
-            outputStream.WriteLine(temp);
+            return hapilib.GetMethods().Where(methodInfo => methodInfo.GetCustomAttributes().Any(attr => { return attr.GetType() == typeof(HostAPI); }));
         }
 
-        [HostAPI("Read",0,true)]
-        private void HAPI_Read()
-        {
-            string temp = inputStream.ReadLine();
-            GetReturnValue().Assign(new Value(temp));
-        }
+        #endregion
 
         #region stack helper function
-        public void InitStack()
+
+        private int PushStackFrame()
         {
-            stack = new Value[1000];
-            for (int i = 0; i < 1000; i++)
-            {
-                stack[i] = new Value();
-            }
-            topStackIndex = script.globalDataSize;
+            stack.topStackIndex += currFunc.varCount + 1;
+            return stack.topStackIndex;
         }
 
-        public Value Pop()
+        private int PopStackFrame()
         {
-            return stack[--topStackIndex];
+            stack.topStackIndex -= currFunc.varCount + 1;
+            return stack.topStackIndex;
         }
 
-        public int Push(Value value)
-        {
-            stack[topStackIndex].Assign(value);
-            return ++topStackIndex;
-        }
-
-        public int PushStackFrame()
-        {
-            topStackIndex += currFunc.varCount + 1;
-            return topStackIndex;
-        }
-
-        public int PopStackFrame()
-        {
-            topStackIndex -= currFunc.varCount + 1;
-            return topStackIndex;
-        }
-
-        public Value GetReturnValue()
-        {
-            return stack[0];
-        }
-
-        public Value ResolveValue(Value value)
+        private Value ResolveValue(Value value)
         {
             switch (value.type)
             {
@@ -273,33 +253,33 @@ namespace XASM.VirtualMachine
             }
         }
 
-        public Value ResolveStackReference(Value value)
+        private Value ResolveStackReference(Value value)
         {
             if (value.type == ValType.stackReference)
             {
                 //absolute stack index
                 if (value.i>=0)
                 {
-                    if (value.i>topStackIndex)
+                    if (value.i> stack.topStackIndex)
                     {
                         Console.WriteLine("=====");
                         Console.WriteLine(stacklog.ToString());
                         Console.WriteLine("=====");
-                        throw new StackOverflowException(string.Format("Trying to access value out of the stack {0} stackReference: {1} {0} topStackIndex: {2}", Environment.NewLine, value.i, topStackIndex));
+                        throw new StackOverflowException(string.Format("Trying to access value out of the stack {0} stackReference: {1} {0} topStackIndex: {2}", Environment.NewLine, value.i, stack.topStackIndex));
                     }
                     return stack[value.i];
                 }
                 //relative stack index
                 else
                 {
-                    if (topStackIndex + value.i<0)
+                    if (stack.topStackIndex + value.i<0)
                     {
                         Console.WriteLine("=====");
                         Console.WriteLine(stacklog.ToString());
                         Console.WriteLine("=====");
-                        throw new StackOverflowException(string.Format("Trying to access value out of the stack {0} stackReference: {1} {0} topStackIndex: {2}", Environment.NewLine, value.i, topStackIndex));
+                        throw new StackOverflowException(string.Format("Trying to access value out of the stack {0} stackReference: {1} {0} topStackIndex: {2}", Environment.NewLine, value.i, stack.topStackIndex));
                     }
-                    return stack[topStackIndex + value.i];
+                    return stack[stack.topStackIndex + value.i];
                 }
             }
             else
@@ -312,7 +292,7 @@ namespace XASM.VirtualMachine
         {
             StringBuilder stringbuilder = new StringBuilder();
 
-            for (int i = topStackIndex - 1; i >= 0; i--)
+            for (int i = stack.topStackIndex - 1; i >= 0; i--)
             {
                 stringbuilder.AppendFormat("{0} {1}", i, stack[i].ToString());
                 stringbuilder.AppendLine();
@@ -329,9 +309,6 @@ namespace XASM.VirtualMachine
                 Console.WriteLine("No script has been loaded");
                 return;
             }
-
-            InitStack();
-            InitHAPITable();
 
             int n = script.Length;
 
@@ -590,7 +567,7 @@ namespace XASM.VirtualMachine
                                 PushStackFrame();
 
                                 //save the caller to jump back later
-                                stack[topStackIndex - currFunc.varCount - 1] = new Value(instrCounter + 1);
+                                stack[stack.topStackIndex - currFunc.varCount - 1] = new Value(instrCounter + 1);
 
                                 //jump to the function entrypoint
                                 instrCounter = currFunc.entryPoint;
@@ -598,14 +575,20 @@ namespace XASM.VirtualMachine
 
                             case OpCode.callhost:
                                 string hapi_name = firstOp.s;
-                                HAPI_table[hapi_name].Invoke();
+                                foreach (var lib in HAPI_table)
+                                {
+                                    if (lib.Value.ContainsKey(hapi_name))
+                                    {
+                                        lib.Value[hapi_name].Invoke(lib.Key, new object[] { stack });
+                                    }
+                                }
                                 break;
 
                             case OpCode.push:
-                                Push(firstOp);
+                                stack.Push(firstOp);
                                 break;
                             case OpCode.pop:
-                                temp = Pop();
+                                temp = stack.Pop();
                                 firstOp.Assign(temp);
                                 break;
 
@@ -640,16 +623,9 @@ namespace XASM.VirtualMachine
                     #endregion
 
                     case OpCode.ret:
-                        try
-                        {
-                            //jump back to caller
-                            instrCounter = stack[topStackIndex - currFunc.varCount - 1].i;
-                            isJump = true;
-                        }
-                        catch
-                        {
-                            Console.WriteLine(stacklog.ToString());
-                        }
+                        //jump back to caller
+                        instrCounter = stack[stack.topStackIndex - currFunc.varCount - 1].i;
+                        isJump = true;
 
                         //pop currfunc stack frame
                         PopStackFrame();
@@ -680,7 +656,7 @@ namespace XASM.VirtualMachine
             //exit code
             Console.WriteLine("exit code : " + exitCode);
 
-            if (isWriteStack)
+            if (isVerbose)
             {
                 File.WriteAllText("stacklog.txt", stacklog.ToString());
             }

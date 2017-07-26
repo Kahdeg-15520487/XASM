@@ -35,6 +35,8 @@ public class Parser {
 	public Token la;   // lookahead token
 	int errDist = minErrDist;
 
+	public bool verbose;
+
 ScriptEmitter emitter;// = new ScriptEmit();
 	Scope global = new Scope();
 	Scope currScope;
@@ -44,10 +46,11 @@ ScriptEmitter emitter;// = new ScriptEmit();
 // keyword IGNORECASE here.
 
 
-	public Parser(Scanner scanner, ScriptEmitter emitter, Errors errorsStream) {
+	public Parser(Scanner scanner, ScriptEmitter emitter, Errors errorsStream,bool verbose = false) {
 		this.scanner = scanner;
 		this.emitter = emitter;
 		errors = errorsStream;
+		this.verbose = verbose;
 	}
 
 	void SynErr (int n) {
@@ -158,6 +161,7 @@ ScriptEmitter emitter;// = new ScriptEmit();
 		identifier(out name);
 		Value lit;
 		currScope.AddVariable(name);
+		if (verbose)
 		System.Console.WriteLine(name + " " + (currScope.IsGlobalScope ? "global" : "local")); 
 		
 		if (la.kind == 7) {
@@ -172,6 +176,7 @@ ScriptEmitter emitter;// = new ScriptEmit();
 		Expect(12);
 		identifier(out name);
 		currScope.AddParameter(name);
+		if (verbose)
 		System.Console.WriteLine(name + " param"); 
 		
 	}
@@ -469,8 +474,10 @@ ScriptEmitter emitter;// = new ScriptEmit();
 		foreach (var kvp in linelabels){
 		emitter.AddLineLabel(kvp.Key,kvp.Value);
 		}
+		if (verbose){
 		System.Console.WriteLine();
 		System.Console.WriteLine(currScope.ToString());
+		}
 		for (int ic = 0; ic< instrs.Count;ic++){
 		for (int oc = 0; oc<instrs[ic].operands.GetLength(0);oc++){
 		if (instrs[ic].operands[oc].type == ValType.stackReference){
@@ -480,6 +487,7 @@ ScriptEmitter emitter;// = new ScriptEmit();
 		}
 		}
 		emitter.AddInstruction(instrs[ic]);
+		if (verbose)
 		System.Console.WriteLine(emitter.CurrentLine-1 + " : " + instrs[ic]);
 		}
 		func = new Function(entry,paramCount,varCount,funcname); 
@@ -495,9 +503,11 @@ ScriptEmitter emitter;// = new ScriptEmit();
 			} else {
 				functionDeclare(out func);
 				int funcindex = emitter.AddFunction(func);
+				if (verbose){
 				System.Console.WriteLine("entry : " + func.entryPoint);
 				System.Console.WriteLine(func.paramCount + " parameter");
 				System.Console.WriteLine(func.varCount + " local variable");
+				}
 				  if (string.Compare(func.funcName,"main")==0) {
 				    emitter.mainFuncIndex = funcindex;
 				 }
@@ -506,11 +516,10 @@ ScriptEmitter emitter;// = new ScriptEmit();
 		}
 		emitter.AddInstruction(new Instruction(OpCode.exit,new Value(0)));
 		emitter.globalDataSize = globalDataSize; 
+		if (verbose){
 		System.Console.WriteLine("globalDataSize =" + emitter.globalDataSize);
 		System.Console.WriteLine("mainFuncIndex =" + emitter.mainFuncIndex);
-		
-		
-		
+		}
 	}
 
 
