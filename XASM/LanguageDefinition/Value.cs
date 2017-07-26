@@ -74,6 +74,7 @@
 
         /// <summary>
         /// Assigns to the value of other.
+        /// Will override type and value of this value
         /// </summary>
         /// <param name="other">The other value.</param>
         public void Assign(Value other)
@@ -88,15 +89,77 @@
 
         /// <summary>
         /// Copies value of other.
+        /// Will attempt to convert string into target value
         /// </summary>
         /// <param name="other">The other value.</param>
         public void Copy(Value other)
         {
-            i = other.i;
-            f = other.f;
-            c = other.c;
-            s = other.s;
-            arrid = other.arrid;
+            switch (type)
+            {
+                case ValType.intergerLiteral:
+                    switch (other.type)
+                    {
+                        case ValType.intergerLiteral:
+                            i = other.i;
+                            break;
+                        case ValType.floatLiteral:
+                            i = (int)other.f;
+                            break;
+                        case ValType.stringLiteral:
+                            int.TryParse(other.s, out i);
+                            break;
+                    }
+                    break;
+                case ValType.floatLiteral:
+                    switch (other.type)
+                    {
+                        case ValType.intergerLiteral:
+                            f = other.i;
+                            break;
+                        case ValType.floatLiteral:
+                            f = other.f;
+                            break;
+                        case ValType.stringLiteral:
+                            float.TryParse(other.s, out f);
+                            break;
+                    }
+                    break;
+                case ValType.charLiteral:
+                    switch (other.type)
+                    {
+                        case ValType.intergerLiteral:
+                            c = (char)other.i;
+                            break;
+                        case ValType.charLiteral:
+                            c = other.c;
+                            break;
+                    }
+                    break;
+                case ValType.stringLiteral:
+                    switch (other.type)
+                    {
+                        case ValType.intergerLiteral:
+                            s = other.i.ToString();
+                            break;
+                        case ValType.floatLiteral:
+                            s = other.f.ToString();
+                            break;
+                        case ValType.charLiteral:
+                            s = other.c.ToString();
+                            break;
+                        case ValType.stringLiteral:
+                            s = other.s;
+                            break;
+                    }
+                    break;
+                case ValType.stackReference:
+                    i = other.i;
+                    break;
+                case ValType.arrayIndex:
+                    i = other.i;
+                    arrid = other.arrid;
+                    break;
+            }
         }
 
         /// <summary>

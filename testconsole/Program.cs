@@ -18,7 +18,7 @@ namespace testconsole
         [Option('o', "output", Required = false)]
         public string binaryname { get; set; }
 
-        [Option('v',"verbose",Required = false)]
+        [Option('v', "verbose", Required = false)]
         public bool isverbose { get; set; }
 
         [Value(0, Required = true)]
@@ -47,11 +47,11 @@ namespace testconsole
             string sourcecode = arg.sourcecode;
             Script script;
             compiler compiler = new compiler();
-            script = compiler.Compile(sourcecode,arg.isverbose);
+            script = compiler.Compile(sourcecode, arg.isverbose);
             if (script != null)
             {
                 virtualmachine vm = new virtualmachine(isVerbose: arg.isverbose);
-                vm.Load(script);
+                vm.Load(script, new StandardInputOutputHostAPI(Console.In, Console.Out));
 
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
