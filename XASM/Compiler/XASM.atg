@@ -111,7 +111,8 @@ operand <out Value operand> 							(.
 variableDeclare <out string name>						(.  .)
 =	"var" identifier <out name>							(.  Value lit;
 															currScope.AddVariable(name);
-												System.Console.WriteLine(name + " " + (currScope.IsGlobalScope ? "global" : "local")); 
+										if (verbose)
+											System.Console.WriteLine(name + " " + (currScope.IsGlobalScope ? "global" : "local")); 
 														.)
 [
 	//array
@@ -121,6 +122,7 @@ variableDeclare <out string name>						(.  .)
 
 parameterDeclare <out string name>
 = "param" identifier <out name>							(. currScope.AddParameter(name);
+														if (verbose)
 														   System.Console.WriteLine(name + " param"); 
 														.)
 .
@@ -203,8 +205,10 @@ functionDeclare <out Function func>						(. string name; string funcname = strin
 				(.	foreach (var kvp in linelabels){
 						emitter.AddLineLabel(kvp.Key,kvp.Value);
 					}
-					System.Console.WriteLine();
-					System.Console.WriteLine(currScope.ToString());
+					if (verbose){
+						System.Console.WriteLine();
+						System.Console.WriteLine(currScope.ToString());
+					}
 					for (int ic = 0; ic< instrs.Count;ic++){
 						for (int oc = 0; oc<instrs[ic].operands.GetLength(0);oc++){
 							if (instrs[ic].operands[oc].type == ValType.stackReference){
@@ -214,7 +218,8 @@ functionDeclare <out Function func>						(. string name; string funcname = strin
 							}
 						}
 						emitter.AddInstruction(instrs[ic]);
-						System.Console.WriteLine(emitter.CurrentLine-1 + " : " + instrs[ic]);
+						if (verbose)
+							System.Console.WriteLine(emitter.CurrentLine-1 + " : " + instrs[ic]);
 				}.)
 														(. func = new Function(entry,paramCount,varCount,funcname); .)
 .
@@ -227,9 +232,11 @@ XASM=													(. string name; Function func; int globalDataSize = 0; currSco
 |	
 	functionDeclare <out func>							(.  
 															int funcindex = emitter.AddFunction(func);
+										if (verbose){
 															System.Console.WriteLine("entry : " + func.entryPoint);
 															System.Console.WriteLine(func.paramCount + " parameter");
 															System.Console.WriteLine(func.varCount + " local variable");
+										}
 														    if (string.Compare(func.funcName,"main")==0) {
 														      emitter.mainFuncIndex = funcindex;
 														   }
@@ -237,11 +244,10 @@ XASM=													(. string name; Function func; int globalDataSize = 0; currSco
 }
 														(. emitter.AddInstruction(new Instruction(OpCode.exit,new Value(0)));
 														   emitter.globalDataSize = globalDataSize; 
+										if (verbose){
 														   System.Console.WriteLine("globalDataSize =" + emitter.globalDataSize);
 														   System.Console.WriteLine("mainFuncIndex =" + emitter.mainFuncIndex);
-														   
-														   
-														.)
+										}.)
 .
 
 // End of your compiler specification, make sure the name here matches
