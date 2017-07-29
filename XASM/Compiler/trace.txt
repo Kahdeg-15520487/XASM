@@ -16,250 +16,250 @@ Graph nodes:
   10 t    stringLitera    11                      85
   11 sem                  -0               2277    0
   12 alt                  -0     0    10          85
-  13 t    ident           14                      88
-  14 sem                   0               2401    0
-  15 nt   literal         16               2570   94
-  16 sem                  -0               2590    0
-  17 nt   identifier      18               2629   95
-  18 sem                  25               2649    0
-  19 t    openBracket     22                     103
-  20 t    intergerLite   -24                     104
-  21 nt   identifier     -24               3016  105
-  22 alt                  24    23    20         104
-  23 alt                 -24     0    21         105
-  24 t    closeBracket    -0                     107
+  13 t    ident           14                      90
+  14 sem                   0               2489    0
+  15 nt   literal         16               2658   96
+  16 sem                  -0               2678    0
+  17 nt   identifier      18               2717   97
+  18 sem                  25               2737    0
+  19 t    openBracket     22                     105
+  20 t    intergerLite   -24                     106
+  21 nt   identifier     -24               3104  107
+  22 alt                  24    23    20         106
+  23 alt                 -24     0    21         107
+  24 t    closeBracket    -0                     109
   25 opt                  -0     0    19           0
-  26 alt                   0    27    15          94
-  27 alt                  -0     0    17          95
-  28 t    "var"           29                     112
-  29 nt   identifier      30               3123  112
-  30 sem                  35               3143    0
-  31 t    openBracket     32                     119
-  32 t    intergerLite    33                     119
-  33 t    closeBracket    34                     119
-  34 sem                  -0               3404    0
+  26 alt                   0    27    15          96
+  27 alt                  -0     0    17          97
+  28 t    "var"           29                     114
+  29 nt   identifier      30               3211  114
+  30 sem                  35               3231    0
+  31 t    openBracket     32                     121
+  32 t    intergerLite    33                     121
+  33 t    closeBracket    34                     121
+  34 sem                  -0               3492    0
   35 opt                   0     0    31           0
-  36 t    "param"         37                     124
-  37 nt   identifier      38               3474  124
-  38 sem                   0               3493    0
-  39 nt   identifier      40               3687  131
-  40 t    colon           41                     131
-  41 sem                   0               3713    0
-  42 t    "mov"           43                     137
-  43 nt   operand         44               3895  137
-  44 t    ","             45                     137
-  45 nt   operand         46               3916  137
-  46 sem                -225               3929    0
-  47 t    "add"           48                     139
-  48 nt   operand         49               3999  139
-  49 t    ","             50                     139
-  50 nt   operand         51               4020  139
-  51 sem                -225               4033    0
-  52 alt                 225    53    42         137
-  53 alt                -225    59    47         139
-  54 t    "sub"           55                     140
-  55 nt   operand         56               4101  140
-  56 t    ","             57                     140
-  57 nt   operand         58               4122  140
-  58 sem                -225               4135    0
-  59 alt                -225    65    54         140
-  60 t    "mul"           61                     141
-  61 nt   operand         62               4203  141
-  62 t    ","             63                     141
-  63 nt   operand         64               4224  141
-  64 sem                -225               4237    0
-  65 alt                -225    71    60         141
-  66 t    "div"           67                     142
-  67 nt   operand         68               4305  142
-  68 t    ","             69                     142
-  69 nt   operand         70               4326  142
-  70 sem                -225               4339    0
-  71 alt                -225    77    66         142
-  72 t    "mod"           73                     143
-  73 nt   operand         74               4407  143
-  74 t    ","             75                     143
-  75 nt   operand         76               4428  143
-  76 sem                -225               4441    0
-  77 alt                -225    83    72         143
-  78 t    "exp"           79                     144
-  79 nt   operand         80               4509  144
-  80 t    ","             81                     144
-  81 nt   operand         82               4530  144
-  82 sem                -225               4543    0
-  83 alt                -225    89    78         144
-  84 t    "and"           85                     145
-  85 nt   operand         86               4611  145
-  86 t    ","             87                     145
-  87 nt   operand         88               4632  145
-  88 sem                -225               4645    0
-  89 alt                -225    95    84         145
-  90 t    "or"            91                     146
-  91 nt   operand         92               4713  146
-  92 t    ","             93                     146
-  93 nt   operand         94               4734  146
-  94 sem                -225               4747    0
-  95 alt                -225   101    90         146
-  96 t    "xor"           97                     147
-  97 nt   operand         98               4814  147
-  98 t    ","             99                     147
-  99 nt   operand        100               4835  147
- 100 sem                -225               4848    0
- 101 alt                -225   107    96         147
- 102 t    "shl"          103                     148
- 103 nt   operand        104               4916  148
- 104 t    ","            105                     148
- 105 nt   operand        106               4937  148
- 106 sem                -225               4950    0
- 107 alt                -225   113   102         148
- 108 t    "shr"          109                     149
- 109 nt   operand        110               5018  149
- 110 t    ","            111                     149
- 111 nt   operand        112               5039  149
- 112 sem                -225               5052    0
- 113 alt                -225   117   108         149
- 114 t    "call"         115                     152
- 115 nt   identifier     116               5128  152
- 116 sem                -225               5143    0
- 117 alt                -225   121   114         152
- 118 t    "callhost"     119                     153
- 119 nt   identifier     120               5252  153
- 120 sem                -225               5266    0
- 121 alt                -225   125   118         153
- 122 t    "push"         123                     154
- 123 nt   operand        124               5365  154
- 124 sem                -225               5383    0
- 125 alt                -225   129   122         154
- 126 t    "pop"          127                     155
- 127 nt   operand        128               5448  155
- 128 sem                -225               5467    0
- 129 alt                -225   133   126         155
- 130 t    "jmp"          131                     156
- 131 nt   identifier     132               5534  156
- 132 sem                -225               5553    0
- 133 alt                -225   137   130         156
- 134 t    "neg"          135                     157
- 135 nt   operand        136               5628  157
- 136 sem                -225               5647    0
- 137 alt                -225   141   134         157
- 138 t    "inc"          139                     158
- 139 nt   operand        140               5711  158
- 140 sem                -225               5730    0
- 141 alt                -225   145   138         158
- 142 t    "dec"          143                     159
- 143 nt   operand        144               5794  159
- 144 sem                -225               5813    0
- 145 alt                -225   149   142         159
- 146 t    "not"          147                     160
- 147 nt   operand        148               5877  160
- 148 sem                -225               5896    0
- 149 alt                -225   153   146         160
- 150 t    "pause"        151                     161
- 151 nt   operand        152               5962  161
- 152 sem                -225               5980    0
- 153 alt                -225   157   150         161
- 154 t    "exit"         155                     162
- 155 nt   operand        156               6047  162
- 156 sem                -225               6065    0
- 157 alt                -225   160   154         162
- 158 t    "ret"          159                     164
- 159 sem                -225               6137    0
- 160 alt                -225   168   158         164
- 161 t    "je"           162                     166
- 162 nt   operand        163               6197  166
- 163 t    ","            164                     166
- 164 nt   operand        165               6219  166
- 165 t    ","            166                     166
- 166 nt   identifier     167               6244  166
- 167 sem                -225               6271    0
- 168 alt                -225   176   161         166
- 169 t    "jne"          170                     168
- 170 nt   operand        171               6353  168
- 171 t    ","            172                     168
- 172 nt   operand        173               6375  168
- 173 t    ","            174                     168
- 174 nt   identifier     175               6400  168
- 175 sem                -225               6427    0
- 176 alt                -225   184   169         168
- 177 t    "jg"           178                     170
- 178 nt   operand        179               6509  170
- 179 t    ","            180                     170
- 180 nt   operand        181               6531  170
- 181 t    ","            182                     170
- 182 nt   identifier     183               6556  170
- 183 sem                -225               6583    0
- 184 alt                -225   192   177         170
- 185 t    "jl"           186                     172
- 186 nt   operand        187               6664  172
- 187 t    ","            188                     172
- 188 nt   operand        189               6686  172
- 189 t    ","            190                     172
- 190 nt   identifier     191               6711  172
- 191 sem                -225               6738    0
- 192 alt                -225   200   185         172
- 193 t    "jge"          194                     174
- 194 nt   operand        195               6820  174
- 195 t    ","            196                     174
- 196 nt   operand        197               6842  174
- 197 t    ","            198                     174
- 198 nt   identifier     199               6867  174
- 199 sem                -225               6894    0
- 200 alt                -225   208   193         174
- 201 t    "jle"          202                     176
- 202 nt   operand        203               6977  176
- 203 t    ","            204                     176
- 204 nt   operand        205               6999  176
- 205 t    ","            206                     176
- 206 nt   identifier     207               7024  176
- 207 sem                -225               7051    0
- 208 alt                -225   216   201         176
- 209 t    "getchar"      210                     178
- 210 nt   operand        211               7138  178
- 211 t    ","            212                     178
- 212 nt   operand        213               7160  178
- 213 t    ","            214                     178
- 214 nt   operand        215               7182  178
- 215 sem                -225               7208    0
- 216 alt                -225   224   209         178
- 217 t    "setchar"      218                     180
- 218 nt   operand        219               7287  180
- 219 t    ","            220                     180
- 220 nt   operand        221               7309  180
- 221 t    ","            222                     180
- 222 nt   operand        223               7331  180
- 223 sem                -225               7357    0
- 224 alt                -225     0   217         180
- 225 sem                   0               7435    0
- 226 t    "func"         227                     190
- 227 nt   identifier     228               7809  190
- 228 sem                 229               7827    0
- 229 t    openBrace      242                     192
- 230 nt   parameterDec   231               7972  195
- 231 sem                -242               7990    0
- 232 nt   variableDecl   233               8032  197
- 233 sem                -242               8050    0
- 234 alt                -242   235   230         195
- 235 alt                -242   238   232         197
- 236 nt   linelabelDec   237               8091  199
- 237 sem                -242               8109    0
- 238 alt                -242   241   236         199
- 239 nt   instruction    240               8172  200
- 240 sem                -242               8192    0
- 241 alt                -242     0   239         200
+  36 t    "param"         37                     126
+  37 nt   identifier      38               3562  126
+  38 sem                   0               3581    0
+  39 nt   identifier      40               3775  133
+  40 t    colon           41                     133
+  41 sem                   0               3801    0
+  42 t    "mov"           43                     139
+  43 nt   operand         44               3983  139
+  44 t    ","             45                     139
+  45 nt   operand         46               4004  139
+  46 sem                -225               4017    0
+  47 t    "add"           48                     141
+  48 nt   operand         49               4087  141
+  49 t    ","             50                     141
+  50 nt   operand         51               4108  141
+  51 sem                -225               4121    0
+  52 alt                 225    53    42         139
+  53 alt                -225    59    47         141
+  54 t    "sub"           55                     142
+  55 nt   operand         56               4189  142
+  56 t    ","             57                     142
+  57 nt   operand         58               4210  142
+  58 sem                -225               4223    0
+  59 alt                -225    65    54         142
+  60 t    "mul"           61                     143
+  61 nt   operand         62               4291  143
+  62 t    ","             63                     143
+  63 nt   operand         64               4312  143
+  64 sem                -225               4325    0
+  65 alt                -225    71    60         143
+  66 t    "div"           67                     144
+  67 nt   operand         68               4393  144
+  68 t    ","             69                     144
+  69 nt   operand         70               4414  144
+  70 sem                -225               4427    0
+  71 alt                -225    77    66         144
+  72 t    "mod"           73                     145
+  73 nt   operand         74               4495  145
+  74 t    ","             75                     145
+  75 nt   operand         76               4516  145
+  76 sem                -225               4529    0
+  77 alt                -225    83    72         145
+  78 t    "exp"           79                     146
+  79 nt   operand         80               4597  146
+  80 t    ","             81                     146
+  81 nt   operand         82               4618  146
+  82 sem                -225               4631    0
+  83 alt                -225    89    78         146
+  84 t    "and"           85                     147
+  85 nt   operand         86               4699  147
+  86 t    ","             87                     147
+  87 nt   operand         88               4720  147
+  88 sem                -225               4733    0
+  89 alt                -225    95    84         147
+  90 t    "or"            91                     148
+  91 nt   operand         92               4801  148
+  92 t    ","             93                     148
+  93 nt   operand         94               4822  148
+  94 sem                -225               4835    0
+  95 alt                -225   101    90         148
+  96 t    "xor"           97                     149
+  97 nt   operand         98               4902  149
+  98 t    ","             99                     149
+  99 nt   operand        100               4923  149
+ 100 sem                -225               4936    0
+ 101 alt                -225   107    96         149
+ 102 t    "shl"          103                     150
+ 103 nt   operand        104               5004  150
+ 104 t    ","            105                     150
+ 105 nt   operand        106               5025  150
+ 106 sem                -225               5038    0
+ 107 alt                -225   113   102         150
+ 108 t    "shr"          109                     151
+ 109 nt   operand        110               5106  151
+ 110 t    ","            111                     151
+ 111 nt   operand        112               5127  151
+ 112 sem                -225               5140    0
+ 113 alt                -225   117   108         151
+ 114 t    "call"         115                     154
+ 115 nt   identifier     116               5216  154
+ 116 sem                -225               5231    0
+ 117 alt                -225   121   114         154
+ 118 t    "callhost"     119                     155
+ 119 nt   identifier     120               5340  155
+ 120 sem                -225               5354    0
+ 121 alt                -225   125   118         155
+ 122 t    "push"         123                     156
+ 123 nt   operand        124               5453  156
+ 124 sem                -225               5471    0
+ 125 alt                -225   129   122         156
+ 126 t    "pop"          127                     157
+ 127 nt   operand        128               5536  157
+ 128 sem                -225               5555    0
+ 129 alt                -225   133   126         157
+ 130 t    "jmp"          131                     158
+ 131 nt   identifier     132               5622  158
+ 132 sem                -225               5641    0
+ 133 alt                -225   137   130         158
+ 134 t    "neg"          135                     159
+ 135 nt   operand        136               5716  159
+ 136 sem                -225               5735    0
+ 137 alt                -225   141   134         159
+ 138 t    "inc"          139                     160
+ 139 nt   operand        140               5799  160
+ 140 sem                -225               5818    0
+ 141 alt                -225   145   138         160
+ 142 t    "dec"          143                     161
+ 143 nt   operand        144               5882  161
+ 144 sem                -225               5901    0
+ 145 alt                -225   149   142         161
+ 146 t    "not"          147                     162
+ 147 nt   operand        148               5965  162
+ 148 sem                -225               5984    0
+ 149 alt                -225   153   146         162
+ 150 t    "pause"        151                     163
+ 151 nt   operand        152               6050  163
+ 152 sem                -225               6068    0
+ 153 alt                -225   157   150         163
+ 154 t    "exit"         155                     164
+ 155 nt   operand        156               6135  164
+ 156 sem                -225               6153    0
+ 157 alt                -225   160   154         164
+ 158 t    "ret"          159                     166
+ 159 sem                -225               6225    0
+ 160 alt                -225   168   158         166
+ 161 t    "je"           162                     168
+ 162 nt   operand        163               6285  168
+ 163 t    ","            164                     168
+ 164 nt   operand        165               6307  168
+ 165 t    ","            166                     168
+ 166 nt   identifier     167               6332  168
+ 167 sem                -225               6359    0
+ 168 alt                -225   176   161         168
+ 169 t    "jne"          170                     170
+ 170 nt   operand        171               6441  170
+ 171 t    ","            172                     170
+ 172 nt   operand        173               6463  170
+ 173 t    ","            174                     170
+ 174 nt   identifier     175               6488  170
+ 175 sem                -225               6515    0
+ 176 alt                -225   184   169         170
+ 177 t    "jg"           178                     172
+ 178 nt   operand        179               6597  172
+ 179 t    ","            180                     172
+ 180 nt   operand        181               6619  172
+ 181 t    ","            182                     172
+ 182 nt   identifier     183               6644  172
+ 183 sem                -225               6671    0
+ 184 alt                -225   192   177         172
+ 185 t    "jl"           186                     174
+ 186 nt   operand        187               6752  174
+ 187 t    ","            188                     174
+ 188 nt   operand        189               6774  174
+ 189 t    ","            190                     174
+ 190 nt   identifier     191               6799  174
+ 191 sem                -225               6826    0
+ 192 alt                -225   200   185         174
+ 193 t    "jge"          194                     176
+ 194 nt   operand        195               6908  176
+ 195 t    ","            196                     176
+ 196 nt   operand        197               6930  176
+ 197 t    ","            198                     176
+ 198 nt   identifier     199               6955  176
+ 199 sem                -225               6982    0
+ 200 alt                -225   208   193         176
+ 201 t    "jle"          202                     178
+ 202 nt   operand        203               7065  178
+ 203 t    ","            204                     178
+ 204 nt   operand        205               7087  178
+ 205 t    ","            206                     178
+ 206 nt   identifier     207               7112  178
+ 207 sem                -225               7139    0
+ 208 alt                -225   216   201         178
+ 209 t    "getchar"      210                     180
+ 210 nt   operand        211               7226  180
+ 211 t    ","            212                     180
+ 212 nt   operand        213               7248  180
+ 213 t    ","            214                     180
+ 214 nt   operand        215               7270  180
+ 215 sem                -225               7296    0
+ 216 alt                -225   224   209         180
+ 217 t    "setchar"      218                     182
+ 218 nt   operand        219               7375  182
+ 219 t    ","            220                     182
+ 220 nt   operand        221               7397  182
+ 221 t    ","            222                     182
+ 222 nt   operand        223               7419  182
+ 223 sem                -225               7445    0
+ 224 alt                -225     0   217         182
+ 225 sem                   0               7523    0
+ 226 t    "func"         227                     192
+ 227 nt   identifier     228               7897  192
+ 228 sem                 229               7915    0
+ 229 t    openBrace      242                     194
+ 230 nt   parameterDec   231               8060  197
+ 231 sem                -242               8078    0
+ 232 nt   variableDecl   233               8120  199
+ 233 sem                -242               8138    0
+ 234 alt                -242   235   230         197
+ 235 alt                -242   238   232         199
+ 236 nt   linelabelDec   237               8179  201
+ 237 sem                -242               8197    0
+ 238 alt                -242   241   236         201
+ 239 nt   instruction    240               8260  202
+ 240 sem                -242               8280    0
+ 241 alt                -242     0   239         202
  242 iter                243     0   234           0
- 243 sem                 244               8291    0
- 244 t    closeBrace     245                     204
- 245 sem                 246               8367    0
- 246 sem                   0               9216    0
- 247 sem                 248               9303    0
- 248 sem                 255               9395    0
- 249 nt   variableDecl   250               9473  231
- 250 sem                -255               9492    0
- 251 nt   functionDecl   252               9571  233
- 252 sem                -255               9608    0
- 253 alt                -255   254   249         231
- 254 alt                -255     0   251         233
+ 243 sem                 244               8379    0
+ 244 t    closeBrace     245                     206
+ 245 sem                 246               8455    0
+ 246 sem                   0               9304    0
+ 247 sem                 248               9391    0
+ 248 sem                 255               9483    0
+ 249 nt   variableDecl   250               9561  233
+ 250 sem                -255               9580    0
+ 251 nt   functionDecl   252               9659  235
+ 252 sem                -255               9696    0
+ 253 alt                -255   254   249         233
+ 254 alt                -255     0   251         235
  255 iter                256     0   253           0
- 256 sem                   0              10093    0
+ 256 sem                   0              10181    0
 
 
 First: node = 5
@@ -730,67 +730,67 @@ ANY and SYNC sets:
 Cross reference list:
 --------------------
 
-  ","           137  139  140  141  142  143  144  145  146  147  148  149  166
-                166  168  168  170  170  172  172  174  174  176  176  178  178
-                180  180
-  "add"         139
-  "and"         145
-  "call"        152
-  "callhost"    153
-  "dec"         159
-  "div"         142
-  "exit"        162
-  "exp"         144
-  "func"        190
-  "getchar"     178
-  "inc"         158
-  "je"          166
-  "jg"          170
-  "jge"         174
-  "jl"          172
-  "jle"         176
-  "jmp"         156
-  "jne"         168
-  "mod"         143
-  "mov"         137
-  "mul"         141
-  "neg"         157
-  "not"         160
-  "or"          146
-  "param"       124
-  "pause"       161
-  "pop"         155
-  "push"        154
-  "ret"         164
-  "setchar"     180
-  "shl"         148
-  "shr"         149
-  "sub"         140
-  "var"         112
-  "xor"         147
+  ","           139  141  142  143  144  145  146  147  148  149  150  151  168
+                168  170  170  172  172  174  174  176  176  178  178  180  180
+                182  182
+  "add"         141
+  "and"         147
+  "call"        154
+  "callhost"    155
+  "dec"         161
+  "div"         144
+  "exit"        164
+  "exp"         146
+  "func"        192
+  "getchar"     180
+  "inc"         160
+  "je"          168
+  "jg"          172
+  "jge"         176
+  "jl"          174
+  "jle"         178
+  "jmp"         158
+  "jne"         170
+  "mod"         145
+  "mov"         139
+  "mul"         143
+  "neg"         159
+  "not"         162
+  "or"          148
+  "param"       126
+  "pause"       163
+  "pop"         157
+  "push"        156
+  "ret"         166
+  "setchar"     182
+  "shl"         150
+  "shr"         151
+  "sub"         142
+  "var"         114
+  "xor"         149
   charLiteral    84
-  closeBrace    204
-  closeBracket  107  119
-  colon         131
+  closeBrace    206
+  closeBracket  109  121
+  colon         133
   floatLiteral   83
-  functionDecl -186  233
-  ident          88
-  identifier    -87   95  105  112  124  131  152  153  156  166  168  170  172
-                174  176  190
-  instruction  -133  200
-  intergerLite   82  104  119
-  linelabelDec -130  199
-  literal       -81   94
-  openBrace     192
-  openBracket   103  119
-  operand       -90  137  137  139  139  140  140  141  141  142  142  143  143
-                144  144  145  145  146  146  147  147  148  148  149  149  154
-                155  157  158  159  160  161  162  166  166  168  168  170  170
-                172  172  174  174  176  176  178  178  178  180  180  180
-  parameterDec -123  195
+  functionDecl -188  235
+  ident          90
+  identifier    -89   97  107  114  126  133  154  155  158  168  170  172  174
+                176  178  192
+  instruction  -135  202
+  intergerLite   82  106  121
+  linelabelDec -132  201
+  literal       -81   96
+  openBrace     194
+  openBracket   105  121
+  operand       -92  139  139  141  141  142  142  143  143  144  144  145  145
+                146  146  147  147  148  148  149  149  150  150  151  151  156
+                157  159  160  161  162  163  164  168  168  170  170  172  172
+                174  174  176  176  178  178  180  180  180  182  182  182
+  parameterDec -125  197
   stringLitera   85
-  variableDecl -111  197  231
-  XASM         -227
+  variableDecl -113  199  233
+  XASM         -229
 
 
 
@@ -1630,52 +1630,52 @@ Symbol Table:
   8 closeBracket   t    false                46 fixedToken
   9 openBrace      t    false                47 fixedToken
  10 closeBrace     t    false                48 fixedToken
- 11 "var"          t    false               112 litToken
- 12 "param"        t    false               124 litToken
- 13 "mov"          t    false               137 litToken
- 14 ","            t    false               137 fixedToken
- 15 "add"          t    false               139 litToken
- 16 "sub"          t    false               140 litToken
- 17 "mul"          t    false               141 litToken
- 18 "div"          t    false               142 litToken
- 19 "mod"          t    false               143 litToken
- 20 "exp"          t    false               144 litToken
- 21 "and"          t    false               145 litToken
- 22 "or"           t    false               146 litToken
- 23 "xor"          t    false               147 litToken
- 24 "shl"          t    false               148 litToken
- 25 "shr"          t    false               149 litToken
- 26 "call"         t    false               152 litToken
- 27 "callhost"     t    false               153 litToken
- 28 "push"         t    false               154 litToken
- 29 "pop"          t    false               155 litToken
- 30 "jmp"          t    false               156 litToken
- 31 "neg"          t    false               157 litToken
- 32 "inc"          t    false               158 litToken
- 33 "dec"          t    false               159 litToken
- 34 "not"          t    false               160 litToken
- 35 "pause"        t    false               161 litToken
- 36 "exit"         t    false               162 litToken
- 37 "ret"          t    false               164 litToken
- 38 "je"           t    false               166 litToken
- 39 "jne"          t    false               168 litToken
- 40 "jg"           t    false               170 litToken
- 41 "jl"           t    false               172 litToken
- 42 "jge"          t    false               174 litToken
- 43 "jle"          t    false               176 litToken
- 44 "getchar"      t    false               178 litToken
- 45 "setchar"      t    false               180 litToken
- 46 "func"         t    false               190 litToken
+ 11 "var"          t    false               114 litToken
+ 12 "param"        t    false               126 litToken
+ 13 "mov"          t    false               139 litToken
+ 14 ","            t    false               139 fixedToken
+ 15 "add"          t    false               141 litToken
+ 16 "sub"          t    false               142 litToken
+ 17 "mul"          t    false               143 litToken
+ 18 "div"          t    false               144 litToken
+ 19 "mod"          t    false               145 litToken
+ 20 "exp"          t    false               146 litToken
+ 21 "and"          t    false               147 litToken
+ 22 "or"           t    false               148 litToken
+ 23 "xor"          t    false               149 litToken
+ 24 "shl"          t    false               150 litToken
+ 25 "shr"          t    false               151 litToken
+ 26 "call"         t    false               154 litToken
+ 27 "callhost"     t    false               155 litToken
+ 28 "push"         t    false               156 litToken
+ 29 "pop"          t    false               157 litToken
+ 30 "jmp"          t    false               158 litToken
+ 31 "neg"          t    false               159 litToken
+ 32 "inc"          t    false               160 litToken
+ 33 "dec"          t    false               161 litToken
+ 34 "not"          t    false               162 litToken
+ 35 "pause"        t    false               163 litToken
+ 36 "exit"         t    false               164 litToken
+ 37 "ret"          t    false               166 litToken
+ 38 "je"           t    false               168 litToken
+ 39 "jne"          t    false               170 litToken
+ 40 "jg"           t    false               172 litToken
+ 41 "jl"           t    false               174 litToken
+ 42 "jge"          t    false               176 litToken
+ 43 "jle"          t    false               178 litToken
+ 44 "getchar"      t    false               180 litToken
+ 45 "setchar"      t    false               182 litToken
+ 46 "func"         t    false               192 litToken
  47 ???            t    false                 0 fixedToken
   0 literal        nt   true      5 false    81 fixedToken
-  1 identifier     nt   true     13 false    87 fixedToken
-  2 operand        nt   true     26 false    90 fixedToken
-  3 variableDecl   nt   true     28 false   111 fixedToken
-  4 parameterDec   nt   true     36 false   123 fixedToken
-  5 linelabelDec   nt   true     39 false   130 fixedToken
-  6 instruction    nt   true     52 false   133 fixedToken
-  7 functionDecl   nt   true    226 false   186 fixedToken
-  8 XASM           nt   false   247 true    227 fixedToken
+  1 identifier     nt   true     13 false    89 fixedToken
+  2 operand        nt   true     26 false    92 fixedToken
+  3 variableDecl   nt   true     28 false   113 fixedToken
+  4 parameterDec   nt   true     36 false   125 fixedToken
+  5 linelabelDec   nt   true     39 false   132 fixedToken
+  6 instruction    nt   true     52 false   135 fixedToken
+  7 functionDecl   nt   true    226 false   188 fixedToken
+  8 XASM           nt   false   247 true    229 fixedToken
 
 Literal Tokens:
 --------------

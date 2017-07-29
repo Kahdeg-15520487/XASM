@@ -82,7 +82,9 @@ literal <out Value lit>									(. lit = new Value(); .)
 = intergerLiteral										(. lit = new Value(int.Parse(t.val)); .)
 | floatLiteral 											(. lit = new Value(float.Parse(t.val)); .)
 | charLiteral 											(. lit = new Value(char.Parse(t.val)); .)
-| stringLiteral											(. lit = new Value(emitter.AddString(t.val),ValType.stringLiteral); .).
+| stringLiteral											(. string temp = t.val.Remove(t.val.Length-1,1).Remove(0,1);
+															lit = new Value(emitter.AddString(temp),ValType.stringLiteral);
+														.).
 
 identifier<out string name>
 = ident													(. name = t.val; .).

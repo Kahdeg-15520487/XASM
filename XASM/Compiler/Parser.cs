@@ -118,7 +118,9 @@ ScriptEmitter emitter;// = new ScriptEmit();
 			lit = new Value(char.Parse(t.val)); 
 		} else if (la.kind == 5) {
 			Get();
-			lit = new Value(emitter.AddString(t.val),ValType.stringLiteral); 
+			string temp = t.val.Remove(t.val.Length-1,1).Remove(0,1);
+			lit = new Value(emitter.AddString(temp),ValType.stringLiteral);
+			
 		} else SynErr(48);
 	}
 
