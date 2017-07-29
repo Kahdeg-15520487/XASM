@@ -10,6 +10,10 @@ assembly_info:
 platform: Any CPU
  
 configuration: Release
+
+branches:
+  only:
+  - master
  
 build:
   publish_nuget: true
