@@ -302,7 +302,7 @@ namespace XASM.VirtualMachine
         }
         #endregion
 
-        public void Run(int functionIndex = -1)
+        public void Run(string functionName = "main",params Value[] parameters)
         {
             if (script == null)
             {
@@ -312,21 +312,31 @@ namespace XASM.VirtualMachine
 
             int n = script.Length;
 
-            if (script.mainFuncIndex == -1)
+            currFunc = null;
+
+            foreach (var func in script.functiontable)
             {
-                if (functionIndex == -1)
+                if (func.funcName.CompareTo(functionName)==0)
                 {
-                    currFunc = script.functiontable[0];
-                }
-                else
-                {
-                    currFunc = script.functiontable[functionIndex];
+                    currFunc = func;
+                    break;
                 }
             }
-            else
+
+            if (currFunc == null)
             {
-                currFunc = script.functiontable[script.mainFuncIndex];
+                outputStream.WriteLine("No function named: " + functionName);
+                return;
             }
+
+            if (parameters!= null)
+            {
+                for (int i = 0; i < parameters.GetLength(0); i++)
+                {
+                    stack.Push(parameters[i]);
+                }
+            }
+
             instrCounter = currFunc.entryPoint;
             PushStackFrame();
 

@@ -53,7 +53,7 @@ namespace testconsole
 
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
-                vm.Run();
+                vm.Run("main");
                 sw.Stop();
 
                 Console.WriteLine("script execution take {0} ms", sw.ElapsedMilliseconds);
