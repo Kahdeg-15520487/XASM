@@ -27,17 +27,17 @@ before_build:
 #    secure: ueItpz8GrbP00/idHke1mVqPUxms1elvdVUhJRC8AV2JNtoEBF3znONhW+NPP2lG
 #  artifact: /.*\.nupkg/
 
-#artifacts:
-#  - path: 'testconsole\bin'
-#    name: bin
+artifacts:
+  - path: 'testconsole\bin'
+    name: bin
 
-deploy:
-  release: XASM-v$(appveyor_build_version)
-  provider: GitHub
-  auth_token:
-    secure: OCdVNN9IGRNgd0UfcMctZNVbKxMi4e3GneKo8+afU/iXCXhOxfrJ7PuysfxSDkq3
-  artifact: 'testconsole\bin'
-  draft: false
-  prerelease: false
-  on:
-    branch: master
+#deploy:
+#  release: XASM-v$(appveyor_build_version)
+#  provider: GitHub
+#  auth_token:
+#    secure: OCdVNN9IGRNgd0UfcMctZNVbKxMi4e3GneKo8+afU/iXCXhOxfrJ7PuysfxSDkq3
+#  artifact: 'testconsole\bin'
+#  draft: false
+#  prerelease: false
+#  on:
+#    branch: master
