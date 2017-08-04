@@ -30,3 +30,15 @@ before_build:
 artifacts:
   - path: 'testconsole\bin'
     name: bin
+
+deploy:
+  release: XASM-v$(appveyor_build_version)
+  provider: GitHub
+  auth_token:
+    secure: OCdVNN9IGRNgd0UfcMctZNVbKxMi4e3GneKo8+afU/iXCXhOxfrJ7PuysfxSDkq3
+  artifact: 'testconsole\bin'
+  draft: false
+  prerelease: false
+  on:
+    branch: master
+    appveyor_repo_tag: true
