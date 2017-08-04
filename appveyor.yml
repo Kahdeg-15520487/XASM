@@ -26,3 +26,7 @@ before_build:
 #  api_key:
 #    secure: ueItpz8GrbP00/idHke1mVqPUxms1elvdVUhJRC8AV2JNtoEBF3znONhW+NPP2lG
 #  artifact: /.*\.nupkg/
+
+artifacts:
+  - path: test.zip
+    name: test
