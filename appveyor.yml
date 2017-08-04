@@ -15,8 +15,8 @@ branches:
   only:
   - master
  
-build:
-  publish_nuget: true
+#build:
+#  publish_nuget: true
  
 before_build:
   - nuget restore
