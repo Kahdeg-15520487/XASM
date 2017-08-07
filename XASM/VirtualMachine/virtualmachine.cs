@@ -542,7 +542,7 @@ namespace XASM.VirtualMachine
 
                             case OpCode.gettype:
                                 temp = new Value(secondOp.type.ToString());
-                                firstOp.Copy(temp);
+                                firstOp.Assign(temp);
                                 break;
                         }
                         break;

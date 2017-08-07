@@ -149,6 +149,7 @@ instruction <out Instruction instr>						(. Value op1,op2,op3;
 |	"xor" operand <out op1> ',' operand<out op2>		(. instr  = new Instruction(OpCode.xor, op1,op2); .)
 |	"shl" operand <out op1> ',' operand<out op2>		(. instr  = new Instruction(OpCode.shl, op1,op2); .)
 |	"shr" operand <out op1> ',' operand<out op2>		(. instr  = new Instruction(OpCode.shr, op1,op2); .)
+|	"gettype" operand <out op1> ',' operand <out op2>	(. instr = new Instruction(OpCode.gettype, op1,op2); .)
 
 
 |	"call" identifier <out name>			(. instr  = new Instruction(OpCode.call, new Value(name,ValType.intergerLiteral)); .)
@@ -203,7 +204,7 @@ functionDeclare <out Function func>						(. string name; string funcname = strin
 //todo check push pop and callhost to make stack safe
 	}
 														(. instrs.Add(new Instruction(OpCode.ret)); .)
-	closeBrace											
+	closeBrace
 				(.	foreach (var kvp in linelabels){
 						emitter.AddLineLabel(kvp.Key,kvp.Value);
 					}

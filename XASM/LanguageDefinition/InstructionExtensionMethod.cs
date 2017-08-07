@@ -41,6 +41,7 @@
                 case OpCode.shl:
                 case OpCode.shr:
                 case OpCode.concat:
+                case OpCode.gettype:
 
                     ropcount = 2;
                     break;

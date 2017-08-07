@@ -22,7 +22,7 @@ public class Parser {
 	public const int _closeBracket = 8;
 	public const int _openBrace = 9;
 	public const int _closeBrace = 10;
-	public const int maxT = 47;
+	public const int maxT = 48;
 
 	const bool T = true;
 	const bool x = false;
@@ -121,7 +121,7 @@ ScriptEmitter emitter;// = new ScriptEmit();
 			string temp = t.val.Remove(t.val.Length-1,1).Remove(0,1);
 			lit = new Value(emitter.AddString(temp),ValType.stringLiteral);
 			
-		} else SynErr(48);
+		} else SynErr(49);
 	}
 
 	void identifier(out string name) {
@@ -151,10 +151,10 @@ ScriptEmitter emitter;// = new ScriptEmit();
 					Get();
 				} else if (la.kind == 1) {
 					identifier(out name);
-				} else SynErr(49);
+				} else SynErr(50);
 				Expect(8);
 			}
-		} else SynErr(50);
+		} else SynErr(51);
 	}
 
 	void variableDeclare(out string name) {
@@ -292,83 +292,81 @@ ScriptEmitter emitter;// = new ScriptEmit();
 		}
 		case 26: {
 			Get();
-			identifier(out name);
-			instr  = new Instruction(OpCode.call, new Value(name,ValType.intergerLiteral)); 
+			operand(out op1);
+			Expect(14);
+			operand(out op2);
+			instr = new Instruction(OpCode.gettype, op1,op2); 
 			break;
 		}
 		case 27: {
 			Get();
 			identifier(out name);
-			instr  = new Instruction(OpCode.callhost, new Value(emitter.AddHAPI(name))); 
+			instr  = new Instruction(OpCode.call, new Value(name,ValType.intergerLiteral)); 
 			break;
 		}
 		case 28: {
 			Get();
-			operand(out op1);
-			instr  = new Instruction(OpCode.push, op1); 
+			identifier(out name);
+			instr  = new Instruction(OpCode.callhost, new Value(emitter.AddHAPI(name))); 
 			break;
 		}
 		case 29: {
 			Get();
 			operand(out op1);
-			instr  = new Instruction(OpCode.pop, op1); 
+			instr  = new Instruction(OpCode.push, op1); 
 			break;
 		}
 		case 30: {
+			Get();
+			operand(out op1);
+			instr  = new Instruction(OpCode.pop, op1); 
+			break;
+		}
+		case 31: {
 			Get();
 			identifier(out name);
 			instr  = new Instruction(OpCode.jmp,new Value(name)); 
 			break;
 		}
-		case 31: {
+		case 32: {
 			Get();
 			operand(out op1);
 			instr  = new Instruction(OpCode.neg, op1); 
 			break;
 		}
-		case 32: {
+		case 33: {
 			Get();
 			operand(out op1);
 			instr  = new Instruction(OpCode.inc, op1); 
 			break;
 		}
-		case 33: {
+		case 34: {
 			Get();
 			operand(out op1);
 			instr  = new Instruction(OpCode.dec, op1); 
 			break;
 		}
-		case 34: {
+		case 35: {
 			Get();
 			operand(out op1);
 			instr  = new Instruction(OpCode.not, op1); 
 			break;
 		}
-		case 35: {
+		case 36: {
 			Get();
 			operand(out op1);
 			instr  = new Instruction(OpCode.pause, op1); 
 			break;
 		}
-		case 36: {
+		case 37: {
 			Get();
 			operand(out op1);
 			instr  = new Instruction(OpCode.exit, op1); 
 			break;
 		}
-		case 37: {
-			Get();
-			instr  = new Instruction(OpCode.ret); 
-			break;
-		}
 		case 38: {
 			Get();
-			operand(out op1);
-			Expect(14);
-			operand(out op2);
-			Expect(14);
-			identifier(out name);
-			instr  = new Instruction(OpCode.je,op1,op2,new Value(name)); 
+			instr  = new Instruction(OpCode.ret); 
 			break;
 		}
 		case 39: {
@@ -378,7 +376,7 @@ ScriptEmitter emitter;// = new ScriptEmit();
 			operand(out op2);
 			Expect(14);
 			identifier(out name);
-			instr  = new Instruction(OpCode.jne,op1,op2,new Value(name)); 
+			instr  = new Instruction(OpCode.je,op1,op2,new Value(name)); 
 			break;
 		}
 		case 40: {
@@ -388,7 +386,7 @@ ScriptEmitter emitter;// = new ScriptEmit();
 			operand(out op2);
 			Expect(14);
 			identifier(out name);
-			instr  = new Instruction(OpCode.jg,op1,op2,new Value(name)); 
+			instr  = new Instruction(OpCode.jne,op1,op2,new Value(name)); 
 			break;
 		}
 		case 41: {
@@ -398,7 +396,7 @@ ScriptEmitter emitter;// = new ScriptEmit();
 			operand(out op2);
 			Expect(14);
 			identifier(out name);
-			instr  = new Instruction(OpCode.jl,op1,op2,new Value(name)); 
+			instr  = new Instruction(OpCode.jg,op1,op2,new Value(name)); 
 			break;
 		}
 		case 42: {
@@ -408,7 +406,7 @@ ScriptEmitter emitter;// = new ScriptEmit();
 			operand(out op2);
 			Expect(14);
 			identifier(out name);
-			instr  = new Instruction(OpCode.jge,op1,op2,new Value(name)); 
+			instr  = new Instruction(OpCode.jl,op1,op2,new Value(name)); 
 			break;
 		}
 		case 43: {
@@ -418,7 +416,7 @@ ScriptEmitter emitter;// = new ScriptEmit();
 			operand(out op2);
 			Expect(14);
 			identifier(out name);
-			instr  = new Instruction(OpCode.jle,op1,op2,new Value(name)); 
+			instr  = new Instruction(OpCode.jge,op1,op2,new Value(name)); 
 			break;
 		}
 		case 44: {
@@ -427,8 +425,8 @@ ScriptEmitter emitter;// = new ScriptEmit();
 			Expect(14);
 			operand(out op2);
 			Expect(14);
-			operand(out op3);
-			instr  = new Instruction(OpCode.getchar,op1,op2,op3); 
+			identifier(out name);
+			instr  = new Instruction(OpCode.jle,op1,op2,new Value(name)); 
 			break;
 		}
 		case 45: {
@@ -438,10 +436,20 @@ ScriptEmitter emitter;// = new ScriptEmit();
 			operand(out op2);
 			Expect(14);
 			operand(out op3);
+			instr  = new Instruction(OpCode.getchar,op1,op2,op3); 
+			break;
+		}
+		case 46: {
+			Get();
+			operand(out op1);
+			Expect(14);
+			operand(out op2);
+			Expect(14);
+			operand(out op3);
 			instr  = new Instruction(OpCode.setchar,op1,op2,op3); 
 			break;
 		}
-		default: SynErr(51); break;
+		default: SynErr(52); break;
 		}
 		
 	}
@@ -451,7 +459,7 @@ ScriptEmitter emitter;// = new ScriptEmit();
 		List<Instruction> instrs = new List<Instruction>();
 		Dictionary<string,int> linelabels = new Dictionary<string,int>();
 		int paramCount = 0,varCount = 0,entry = emitter.CurrentLine;
-		Expect(46);
+		Expect(47);
 		identifier(out name);
 		currScope = global.AddScope(name);		//todo check function duplicate
 		funcname = name; 
@@ -498,7 +506,7 @@ ScriptEmitter emitter;// = new ScriptEmit();
 	void XASM() {
 		string name; Function func; int globalDataSize = 0; currScope = global; 
 		currScope.AddVariable("retval"); 
-		while (la.kind == 11 || la.kind == 46) {
+		while (la.kind == 11 || la.kind == 47) {
 			if (la.kind == 11) {
 				variableDeclare(out name);
 				globalDataSize++; 
@@ -537,9 +545,9 @@ ScriptEmitter emitter;// = new ScriptEmit();
 	}
 	
 	bool[,] set = {
-		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,x,T,T, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,T,x,x, x,x,x,x, x,x,x,T, T,T,x,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,x,x, x}
+		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x},
+		{x,x,T,T, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x},
+		{x,T,x,x, x,x,x,x, x,x,x,T, T,T,x,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,x, x,x}
 
 	};
 } // end Parser
@@ -582,32 +590,33 @@ public class Errors {
 			case 23: s = "\"xor\" expected"; break;
 			case 24: s = "\"shl\" expected"; break;
 			case 25: s = "\"shr\" expected"; break;
-			case 26: s = "\"call\" expected"; break;
-			case 27: s = "\"callhost\" expected"; break;
-			case 28: s = "\"push\" expected"; break;
-			case 29: s = "\"pop\" expected"; break;
-			case 30: s = "\"jmp\" expected"; break;
-			case 31: s = "\"neg\" expected"; break;
-			case 32: s = "\"inc\" expected"; break;
-			case 33: s = "\"dec\" expected"; break;
-			case 34: s = "\"not\" expected"; break;
-			case 35: s = "\"pause\" expected"; break;
-			case 36: s = "\"exit\" expected"; break;
-			case 37: s = "\"ret\" expected"; break;
-			case 38: s = "\"je\" expected"; break;
-			case 39: s = "\"jne\" expected"; break;
-			case 40: s = "\"jg\" expected"; break;
-			case 41: s = "\"jl\" expected"; break;
-			case 42: s = "\"jge\" expected"; break;
-			case 43: s = "\"jle\" expected"; break;
-			case 44: s = "\"getchar\" expected"; break;
-			case 45: s = "\"setchar\" expected"; break;
-			case 46: s = "\"func\" expected"; break;
-			case 47: s = "??? expected"; break;
-			case 48: s = "invalid literal"; break;
-			case 49: s = "invalid operand"; break;
+			case 26: s = "\"gettype\" expected"; break;
+			case 27: s = "\"call\" expected"; break;
+			case 28: s = "\"callhost\" expected"; break;
+			case 29: s = "\"push\" expected"; break;
+			case 30: s = "\"pop\" expected"; break;
+			case 31: s = "\"jmp\" expected"; break;
+			case 32: s = "\"neg\" expected"; break;
+			case 33: s = "\"inc\" expected"; break;
+			case 34: s = "\"dec\" expected"; break;
+			case 35: s = "\"not\" expected"; break;
+			case 36: s = "\"pause\" expected"; break;
+			case 37: s = "\"exit\" expected"; break;
+			case 38: s = "\"ret\" expected"; break;
+			case 39: s = "\"je\" expected"; break;
+			case 40: s = "\"jne\" expected"; break;
+			case 41: s = "\"jg\" expected"; break;
+			case 42: s = "\"jl\" expected"; break;
+			case 43: s = "\"jge\" expected"; break;
+			case 44: s = "\"jle\" expected"; break;
+			case 45: s = "\"getchar\" expected"; break;
+			case 46: s = "\"setchar\" expected"; break;
+			case 47: s = "\"func\" expected"; break;
+			case 48: s = "??? expected"; break;
+			case 49: s = "invalid literal"; break;
 			case 50: s = "invalid operand"; break;
-			case 51: s = "invalid instruction"; break;
+			case 51: s = "invalid operand"; break;
+			case 52: s = "invalid instruction"; break;
 
 			default: s = "error " + n; break;
 		}

@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
+﻿using System.IO;
 using XASM;
 using XASM.VirtualMachine;
 
 namespace testconsole
-{    
+{
     public class StandardInputOutputHostAPI : HostAPILibrary
     {
-        public StandardInputOutputHostAPI(TextReader input,TextWriter output) : base(input, output) { }
+        public StandardInputOutputHostAPI(TextReader input,TextWriter output) : base(input, output)
+        {
+            HAPILibraryName = GetType().Name;
+        }
 
         [HostAPI("Print")]
         public void Print(Stack stack)
