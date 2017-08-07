@@ -30,7 +30,12 @@ namespace XASM.VirtualMachine
         {
             get
             {
-                return functionStack.Peek();
+                if (functionStack.Count > 0)
+                {
+                    return functionStack.Peek();
+                }
+                else
+                    return null;
             }
             private set
             {
@@ -185,7 +190,7 @@ namespace XASM.VirtualMachine
         }
         #endregion
 
-        public virtualmachine(TextWriter output = null,TextReader input = null,bool isVerbose = false)
+        public virtualmachine(TextReader input = null,TextWriter output = null,bool isVerbose = false)
         {
             outputStream = output != null ? output : Console.Out;
             inputStream = input != null ? input : Console.In;
@@ -311,8 +316,6 @@ namespace XASM.VirtualMachine
             }
 
             int n = script.Length;
-
-            currFunc = null;
 
             foreach (var func in script.functiontable)
             {
