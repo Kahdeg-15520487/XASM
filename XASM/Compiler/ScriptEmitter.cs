@@ -13,7 +13,7 @@ namespace XASM.Compiler
         private Dictionary<string, int> lineLabels;
 
         public int globalDataSize;
-        public int mainFuncIndex;
+        public int mainFuncIndex = -1;
 
         /// <summary>
         /// Gets the current line.
