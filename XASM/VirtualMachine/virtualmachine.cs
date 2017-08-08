@@ -214,18 +214,13 @@ namespace XASM.VirtualMachine
             foreach (var lib in hapilib)
             {
                 HAPI_table.Add(lib, new Dictionary<string, MethodInfo>());
-                foreach (MethodInfo hapi in GetHapiMethod(lib.GetType()))
+
+                foreach (MethodInfo hapi in lib.GetHapiMethod())
                 {
                     HAPI_table[lib].Add(hapi.Name, hapi);
                 }
             }
         }
-
-        private IEnumerable<MethodInfo> GetHapiMethod(Type hapilib)
-        {
-            return hapilib.GetMethods().Where(methodInfo => methodInfo.GetCustomAttributes().Any(attr => { return attr.GetType() == typeof(HostAPI); }));
-        }
-
         #endregion
 
         #region stack helper function
@@ -588,11 +583,23 @@ namespace XASM.VirtualMachine
 
                             case OpCode.callhost:
                                 string hapi_name = firstOp.s;
-                                foreach (var lib in HAPI_table)
+                                if (hapi_name.Contains('.'))
                                 {
-                                    if (lib.Value.ContainsKey(hapi_name))
+                                    var hapi_name_split = hapi_name.Split('.');
+                                    var libb = HAPI_table.First(lib =>
                                     {
-                                        lib.Value[hapi_name].Invoke(lib.Key, new object[] { stack });
+                                        return string.Compare(lib.Key.HAPILibraryName, hapi_name_split[0], true) == 0;
+                                    });
+                                    libb.Value[hapi_name_split[1]].Invoke(libb.Key, new object[] { stack });
+                                }
+                                else
+                                {
+                                    foreach (var lib in HAPI_table)
+                                    {
+                                        if (lib.Value.ContainsKey(hapi_name))
+                                        {
+                                            lib.Value[hapi_name].Invoke(lib.Key, new object[] { stack });
+                                        }
                                     }
                                 }
                                 break;

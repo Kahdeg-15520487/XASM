@@ -5,17 +5,17 @@ namespace XASM.Compiler
     public class compiler
     {
         public TextWriter outputStream = System.Console.Out;
-        public Script Compile(Stream codeStream,bool verbose = false)
+        public Script Compile(Stream codeStream, bool verbose = false, params HostAPILibrary[] hapilibs)
         {
             Errors errors = new Errors(outputStream);
             ScriptEmitter emitter = new ScriptEmitter();
             Scanner scanner = new Scanner(codeStream);
-            Parser parser = new Parser(scanner, emitter, errors, verbose);
+            Parser parser = new Parser(scanner, emitter, errors, verbose, hapilibs);
 
             parser.Parse();
             outputStream.WriteLine("Errors count: " + parser.errors.count);
 
-            if (errors.count ==0)
+            if (errors.count == 0)
             {
                 outputStream.WriteLine("Compilation completed!");
                 outputStream.Close();
@@ -28,12 +28,12 @@ namespace XASM.Compiler
             }
         }
 
-        public Script Compile(string codeFilePath, bool verbose = false)
+        public Script Compile(string codeFilePath, bool verbose = false, params HostAPILibrary[] hapilibs)
         {
             Errors errors = new Errors(outputStream);
             ScriptEmitter emitter = new ScriptEmitter();
             Scanner scanner = new Scanner(codeFilePath);
-            Parser parser = new Parser(scanner, emitter, errors, verbose);
+            Parser parser = new Parser(scanner, emitter, errors, verbose, hapilibs);
 
             parser.Parse();
             outputStream.WriteLine("Errors count: " + parser.errors.count);

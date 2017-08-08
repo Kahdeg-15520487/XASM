@@ -1,7 +1,20 @@
-﻿namespace XASM
+﻿using System.Collections.Generic;
+
+namespace XASM
 {
-    static class InstructionExtensionMethod
+    static class ExtensionMethod
     {
+        public static T[] ToArray<T>(this List<T> values)
+        {
+            int itemcount = values.Count;
+            T[] result = new T[itemcount];
+            for (int i = 0; i < itemcount; i++)
+            {
+                result[i] = values[i];
+            }
+            return result;
+        }
+
         public static int GetOpCount(this OpCode oc)
         {
             int ropcount = 0;

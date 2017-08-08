@@ -204,8 +204,8 @@ public class UTF8Buffer: Buffer {
 public class Scanner {
 	const char EOL = '\n';
 	const int eofSym = 0; /* pdt */
-	const int maxT = 48;
-	const int noSym = 48;
+	const int maxT = 49;
+	const int noSym = 49;
 	char valCh;       // current input character (for token.val)
 
 	public Buffer buffer; // scanner buffer
@@ -240,6 +240,7 @@ public class Scanner {
 		start[123] = 14; 
 		start[125] = 15; 
 		start[44] = 18; 
+		start[46] = 19; 
 		start[Buffer.EOF] = -1;
 
 	}
@@ -340,25 +341,25 @@ public class Scanner {
 			case "gettype": t.kind = 26; break;
 			case "call": t.kind = 27; break;
 			case "callhost": t.kind = 28; break;
-			case "push": t.kind = 29; break;
-			case "pop": t.kind = 30; break;
-			case "jmp": t.kind = 31; break;
-			case "neg": t.kind = 32; break;
-			case "inc": t.kind = 33; break;
-			case "dec": t.kind = 34; break;
-			case "not": t.kind = 35; break;
-			case "pause": t.kind = 36; break;
-			case "exit": t.kind = 37; break;
-			case "ret": t.kind = 38; break;
-			case "je": t.kind = 39; break;
-			case "jne": t.kind = 40; break;
-			case "jg": t.kind = 41; break;
-			case "jl": t.kind = 42; break;
-			case "jge": t.kind = 43; break;
-			case "jle": t.kind = 44; break;
-			case "getchar": t.kind = 45; break;
-			case "setchar": t.kind = 46; break;
-			case "func": t.kind = 47; break;
+			case "push": t.kind = 30; break;
+			case "pop": t.kind = 31; break;
+			case "jmp": t.kind = 32; break;
+			case "neg": t.kind = 33; break;
+			case "inc": t.kind = 34; break;
+			case "dec": t.kind = 35; break;
+			case "not": t.kind = 36; break;
+			case "pause": t.kind = 37; break;
+			case "exit": t.kind = 38; break;
+			case "ret": t.kind = 39; break;
+			case "je": t.kind = 40; break;
+			case "jne": t.kind = 41; break;
+			case "jg": t.kind = 42; break;
+			case "jl": t.kind = 43; break;
+			case "jge": t.kind = 44; break;
+			case "jle": t.kind = 45; break;
+			case "getchar": t.kind = 46; break;
+			case "setchar": t.kind = 47; break;
+			case "func": t.kind = 48; break;
 			default: break;
 		}
 	}
@@ -437,6 +438,8 @@ public class Scanner {
 				else {goto case 0;}
 			case 18:
 				{t.kind = 14; break;}
+			case 19:
+				{t.kind = 29; break;}
 
 		}
 		t.val = new String(tval, 0, tlen);

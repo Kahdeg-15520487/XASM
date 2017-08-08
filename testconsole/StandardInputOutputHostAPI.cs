@@ -8,7 +8,7 @@ namespace testconsole
     {
         public StandardInputOutputHostAPI(TextReader input,TextWriter output) : base(input, output)
         {
-            HAPILibraryName = GetType().Name;
+            HAPILibraryName = "stdio";
         }
 
         [HostAPI("Print")]

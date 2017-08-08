@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 
 namespace XASM
 {
@@ -14,6 +17,33 @@ namespace XASM
             inputStream = input;
             outputStream = output;
             HAPILibraryName = hapilibname;
+        }
+
+        public bool ContainsHostAPI(string name)
+        {
+            return GetAllHostAPI().FirstOrDefault(hapi =>
+            {
+                return string.Compare(hapi.HAPIname, name, true) == 0;
+            }) != null;
+        }
+
+        public HostAPI[] GetAllHostAPI()
+        {
+            List<HostAPI> result = new List<HostAPI>();
+            foreach (var methodinfo in GetHapiMethod())
+            {
+                var temp = methodinfo.GetCustomAttributes().FirstOrDefault(attr => { return attr.GetType() == typeof(HostAPI); }) as HostAPI;
+                if (temp != null)
+                {
+                    result.Add(temp);
+                }
+            }
+            return result.ToArray<HostAPI>();
+        }
+
+        public IEnumerable<MethodInfo> GetHapiMethod()
+        {
+            return GetType().GetMethods().Where(methodInfo => methodInfo.GetCustomAttributes().Any(attr => { return attr.GetType() == typeof(HostAPI); }));
         }
     }
 
