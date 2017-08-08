@@ -5,12 +5,12 @@ namespace XASM.Compiler
 {
     public class ScriptEmitter
     {
-        private List<Instruction> instrs;
-        private List<Function> functiontable;
-        private List<string> stringtable;
-        private List<string> hapitable;
+        public List<Instruction> instrs;
+        public List<Function> functiontable;
+        public List<string> stringtable;
+        public List<string> hapitable;
 
-        private Dictionary<string, int> lineLabels;
+        public Dictionary<string, int> lineLabels;
 
         public int globalDataSize;
         public int mainFuncIndex = -1;

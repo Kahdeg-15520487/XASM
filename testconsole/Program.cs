@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-
+using System.Linq;
+using System.IO;
 
 using CommandLine;
 
 using XASM;
 using XASM.Compiler;
 using XASM.VirtualMachine;
-using System.Linq;
-using System.IO;
+
 
 namespace testconsole
 {
@@ -80,7 +80,7 @@ namespace testconsole
             string sourcecode = arg.sourcecode;
 
             compiler compiler = new compiler();
-            Script script = compiler.Compile(sourcecode, arg.isverbose);
+            Script script = compiler.Compile(sourcecode, arg.isverbose, new StandardInputOutputHostAPI(Console.In, Console.Out));
 
             if (!string.IsNullOrEmpty(arg.binaryname))
             {

@@ -47,11 +47,15 @@ public class Parser {
 
 -->declarations
 
-	public Parser(Scanner scanner, ScriptEmitter emitter, Errors errorsStream,bool verbose = false) {
+	public Parser(Scanner scanner, ScriptEmitter emitter, Errors errorsStream,bool verbose = false,params HostAPILibrary[] hapilibs) {
 		this.scanner = scanner;
 		this.emitter = emitter;
 		errors = errorsStream;
 		this.verbose = verbose;
+		foreach (var hapilib in hapilibs)
+        {
+            this.hapilibs.Add(hapilib);
+        }
 	}
 
 	void SynErr (int n) {
