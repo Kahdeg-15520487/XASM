@@ -1,0 +1,7 @@
+func main{
+	var str
+	mov str, "h"
+	concat str, "ello"
+	push str
+	callhost Print
+}

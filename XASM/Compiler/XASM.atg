@@ -40,7 +40,7 @@ TOKENS
 ident = [{underscore}] letter {letter | digit | underscore}.
 intergerLiteral = [sign] digit {digit}.
 floatLiteral = [sign] digit {digit} dot digit {digit}.
-charLiteral	= quote letter quote.
+charLiteral	= quote ( letter | digit ) quote.
 stringLiteral = doublequote letter {letter | digit | underscore | whitespace | comma} doublequote.
 
 colon = ':'.
@@ -80,11 +80,12 @@ PRODUCTIONS
 
 
 
-literal <out Value lit>									(. lit = new Value(); .)
+literal <out Value lit>									(. lit = new Value(); string temp; .)
 = intergerLiteral										(. lit = new Value(int.Parse(t.val)); .)
 | floatLiteral 											(. lit = new Value(float.Parse(t.val)); .)
-| charLiteral 											(. lit = new Value(char.Parse(t.val)); .)
-| stringLiteral											(. string temp = t.val.Remove(t.val.Length-1,1).Remove(0,1);
+| charLiteral 											(. temp = t.val.Remove(t.val.Length-1,1).Remove(0,1);
+															lit = new Value(char.Parse(temp)); .)
+| stringLiteral											(. temp = t.val.Remove(t.val.Length-1,1).Remove(0,1);
 															lit = new Value(emitter.AddString(temp),ValType.stringLiteral);
 														.).
 
@@ -152,6 +153,7 @@ instruction <out Instruction instr>						(. Value op1,op2,op3;
 |	"shl" operand <out op1> ',' operand<out op2>		(. instr  = new Instruction(OpCode.shl, op1,op2); .)
 |	"shr" operand <out op1> ',' operand<out op2>		(. instr  = new Instruction(OpCode.shr, op1,op2); .)
 |	"gettype" operand <out op1> ',' operand <out op2>	(. instr = new Instruction(OpCode.gettype, op1,op2); .)
+|	"concat" operand <out op1> ',' operand <out op2>	(. instr = new Instruction(OpCode.concat, op1,op2); .)
 
 
 |	"call" identifier <out name>			(. instr  = new Instruction(OpCode.call, new Value(name,ValType.intergerLiteral)); .)
@@ -264,7 +266,7 @@ functionDeclare <out Function func>						(. string name; string funcname = strin
                     break;
                 case OpCode.callhost:
                     HostAPI hapi;
-                    string hapiname = instrs[ic].operands[0].s;
+                    string hapiname = emitter.hapitable[instrs[ic].operands[0].i];
                     if (hapiname.Contains('.'))
                     {
                         var tttt = hapiname.Split('.');

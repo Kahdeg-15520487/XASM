@@ -81,6 +81,12 @@ namespace testconsole
 
             compiler compiler = new compiler();
             Script script = compiler.Compile(sourcecode, arg.isverbose, new StandardInputOutputHostAPI(Console.In, Console.Out));
+            
+            if (script == null)
+            {
+                Console.WriteLine("Compilation failed!");
+                return;
+            }
 
             if (!string.IsNullOrEmpty(arg.binaryname))
             {
@@ -89,19 +95,16 @@ namespace testconsole
 
             if (arg.isrun)
             {
-                if (script != null)
+                if (script.mainFuncIndex != -1)
                 {
-                    if (script.mainFuncIndex != -1)
-                    {
-                        Run(script, arg.isverbose);
-                    }
-                    else
-                    {
-                        Console.WriteLine("There is no main function in the script!");
-                        Console.WriteLine("Please enter function's name to execute: ");
-                        string funcname = Console.ReadLine();
-                        Run(script, arg.isverbose, funcname);
-                    }
+                    Run(script, arg.isverbose);
+                }
+                else
+                {
+                    Console.WriteLine("There is no main function in the script!");
+                    Console.WriteLine("Please enter function's name to execute: ");
+                    string funcname = Console.ReadLine();
+                    Run(script, arg.isverbose, funcname);
                 }
             }
         }
