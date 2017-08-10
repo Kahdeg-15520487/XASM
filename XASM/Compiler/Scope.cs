@@ -72,6 +72,26 @@ namespace XASM.Compiler
         }
 
         /// <summary>
+        /// Adds the array.
+        /// </summary>
+        /// <param name="name">The name of the array.</param>
+        /// <param name="capacity">The capacity of the array.</param>
+        /// <returns></returns>
+        public int AddArray(string name,int capacity)
+        {
+            if (variables.Contains(name) || parameters.Contains(name))
+            {
+                return int.MinValue;
+            }
+            variables.Add(name);
+            for (int i = 1; i < capacity; i++)
+            {
+                variables.Add(name);
+            }
+            return variables.Count - 1;
+        }
+
+        /// <summary>
         /// does the curr scope Contains the symbol.
         /// </summary>
         /// <param name="name">The name.</param>
@@ -109,6 +129,16 @@ namespace XASM.Compiler
                     return index - variables.Count;
                 }
             }
+        }
+
+        public int RemoveVariable(string name)
+        {
+            if (!variables.Contains(name))
+            {
+                return int.MinValue;
+            }
+            variables.Remove(name);
+            return variables.Count - 1;
         }
 
         /// <summary>

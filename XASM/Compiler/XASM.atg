@@ -90,11 +90,11 @@ literal <out Value lit>									(. lit = new Value(); string temp; .)
 														.).
 
 identifier<out string name>
-= ident													(. name = t.val; .).
+= ident													(. name = t.val;.).
 
 operand <out Value operand> 							(.
 															operand = new Value(); 
-															string name; Value lit;
+															string name; string name2; Value lit;
 														.)
 =	literal	<out lit>									(. operand.Assign(lit); .)
 |	identifier <out name>								(. operand.type = ValType.stackReference;
@@ -105,11 +105,16 @@ operand <out Value operand> 							(.
 														   operand.s = name;
 														.)
 [	
-	openBracket 
-		( intergerLiteral
-		| identifier <out name>
+	openBracket							(. .)
+		( literal <out lit>				(.	if (lit.IsInterger())
+					                            operand.i = lit.i;
+					                        else{
+					                            SemErr("Array index must be of type intergerLiteral");
+					                        }.)
+		| identifier <out name2>		(.  operand.type = ValType.arrayIndex;
+											operand.s +='|' + name2; .)
 		) 
-	closeBracket
+	closeBracket										
 ]
 .
 
@@ -121,7 +126,16 @@ variableDeclare <out string name>						(.  .)
 														.)
 [
 	//array
-	openBracket intergerLiteral closeBracket		 	(.  .)
+	openBracket literal<out lit> closeBracket		 	(. 
+					if (lit.IsInterger())
+					{
+					    currScope.RemoveVariable(name);
+					    currScope.AddArray(name, lit.i);
+					}
+					else
+					{
+					    SemErr("Array's capacity must be an intergerLiteral");
+					} .)
 ]
 .
 
@@ -226,9 +240,9 @@ functionDeclare <out Function func>						(. string name; string funcname = strin
 	openBrace
 
 	{
-		parameterDeclare <out name>						(. paramCount ++; .)
+		parameterDeclare <out name>						(.  .)
 	|
-		variableDeclare	<out name>						(. varCount ++;	.)
+		variableDeclare	<out name>						(.  .)
 	|
 		linelabelDeclare <out name>						(. linelabels.Add(name,entry + instrs.Count); .)
 	|	instruction	<out instr>							(. instrs.Add(instr); .)
@@ -237,24 +251,34 @@ functionDeclare <out Function func>						(. string name; string funcname = strin
 														(. instrs.Add(new Instruction(OpCode.ret)); .)
 	closeBrace
 				(.	foreach (var kvp in linelabels){
-					    emitter.AddLineLabel(kvp.Key,kvp.Value);
+				        emitter.AddLineLabel(kvp.Key,kvp.Value);
 					}
 					if (verbose){
-					    System.Console.WriteLine();
-					    System.Console.WriteLine(currScope.ToString());
+				        System.Console.WriteLine();
+				        System.Console.WriteLine(currScope.ToString());
 					}
 					for (int ic = 0; ic< instrs.Count;ic++){
-					    for (int oc = 0; oc<instrs[ic].operands.GetLength(0);oc++){
-						    if (instrs[ic].operands[oc].type == ValType.stackReference){
-							    if (currScope.ContainVariable(instrs[ic].operands[oc].s))
-								    instrs[ic].operands[oc].i = currScope.GetStackIndexOfVariable(instrs[ic].operands[oc].s);
-							    else instrs[ic].operands[oc].i = currScope.GetStackIndexOfParameter(instrs[ic].operands[oc].s);
-						    }
-					    }
-					    emitter.AddInstruction(instrs[ic]);
-					    if (verbose)
-						    System.Console.WriteLine(emitter.CurrentLine-1 + " : " + instrs[ic]);
-					}
+				        for (int oc = 0; oc<instrs[ic].operands.GetLength(0);oc++){
+							var tempop = instrs[ic].operands[oc];
+				            switch (tempop.type){
+				                case ValType.stackReference:
+				                    if (currScope.ContainVariable(tempop.s))
+				                        instrs[ic].operands[oc].i = currScope.GetStackIndexOfVariable(tempop.s) + tempop.i;
+				                    else instrs[ic].operands[oc].i = currScope.GetStackIndexOfParameter(tempop.s);
+				                    break;
+				                case ValType.arrayIndex:
+				                    if (currScope.ContainVariable(tempop.s)){
+				                        var arrayindex = tempop.s.Split('|');
+				                        instrs[ic].operands[oc].i = currScope.GetStackIndexOfVariable(arrayindex[0]);
+				                        instrs[ic].operands[oc].arrid = currScope.GetStackIndexOfVariable(arrayindex[1]);
+				                    }
+				                    break;
+				            }
+				        }
+				        emitter.AddInstruction(instrs[ic]);
+				        if (verbose)
+				            System.Console.WriteLine(emitter.CurrentLine-1 + " : " + instrs[ic]);
+				    }
         int stackeval = 0;
         for (int ic = 0; ic< instrs.Count;ic++){
             switch (instrs[ic].opcode){
@@ -304,8 +328,9 @@ functionDeclare <out Function func>						(. string name; string funcname = strin
                 SemErr("Stack corruption: pop < push");
             }
         }
-				.)
-														(. func = new Function(entry,paramCount,varCount,funcname); .)
+        varCount = currScope.variables.Count;
+        paramCount = currScope.parameters.Count;
+        func = new Function(entry,paramCount,varCount,funcname); .)
 .
 
 XASM=												(. string name; Function func; int globalDataSize = 0; currScope = global; .)

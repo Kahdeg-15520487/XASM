@@ -133,12 +133,12 @@ ScriptEmitter emitter;// = new ScriptEmit();
 
 	void identifier(out string name) {
 		Expect(1);
-		name = t.val; 
+		name = t.val;
 	}
 
 	void operand(out Value operand) {
 		operand = new Value(); 
-		string name; Value lit;
+		string name; string name2; Value lit;
 		
 		if (StartOf(1)) {
 			literal(out lit);
@@ -154,10 +154,18 @@ ScriptEmitter emitter;// = new ScriptEmit();
 			
 			if (la.kind == 7) {
 				Get();
-				if (la.kind == 2) {
-					Get();
+				
+				if (StartOf(1)) {
+					literal(out lit);
+					if (lit.IsInterger())
+					    operand.i = lit.i;
+					else{
+					    SemErr("Array index must be of type intergerLiteral");
+					}
 				} else if (la.kind == 1) {
-					identifier(out name);
+					identifier(out name2);
+					operand.type = ValType.arrayIndex;
+					operand.s +='|' + name2; 
 				} else SynErr(52);
 				Expect(8);
 			}
@@ -175,9 +183,17 @@ ScriptEmitter emitter;// = new ScriptEmit();
 		
 		if (la.kind == 7) {
 			Get();
-			Expect(2);
+			literal(out lit);
 			Expect(8);
-			
+			if (lit.IsInterger())
+			{
+			   currScope.RemoveVariable(name);
+			   currScope.AddArray(name, lit.i);
+			}
+			else
+			{
+			   SemErr("Array's capacity must be an intergerLiteral");
+			} 
 		}
 	}
 
@@ -511,10 +527,10 @@ ScriptEmitter emitter;// = new ScriptEmit();
 		while (StartOf(2)) {
 			if (la.kind == 12) {
 				parameterDeclare(out name);
-				paramCount ++; 
+				
 			} else if (la.kind == 11) {
 				variableDeclare(out name);
-				varCount ++;	
+				
 			} else if (la.kind == 1) {
 				linelabelDeclare(out name);
 				linelabels.Add(name,entry + instrs.Count); 
@@ -526,23 +542,31 @@ ScriptEmitter emitter;// = new ScriptEmit();
 		instrs.Add(new Instruction(OpCode.ret)); 
 		Expect(10);
 		foreach (var kvp in linelabels){
-		 emitter.AddLineLabel(kvp.Key,kvp.Value);
+		    emitter.AddLineLabel(kvp.Key,kvp.Value);
 		}
 		if (verbose){
-		 System.Console.WriteLine();
-		 System.Console.WriteLine(currScope.ToString());
+		    System.Console.WriteLine();
+		    System.Console.WriteLine(currScope.ToString());
 		}
 		for (int ic = 0; ic< instrs.Count;ic++){
-		 for (int oc = 0; oc<instrs[ic].operands.GetLength(0);oc++){
-		  if (instrs[ic].operands[oc].type == ValType.stackReference){
-		   if (currScope.ContainVariable(instrs[ic].operands[oc].s))
-		    instrs[ic].operands[oc].i = currScope.GetStackIndexOfVariable(instrs[ic].operands[oc].s);
-		   else instrs[ic].operands[oc].i = currScope.GetStackIndexOfParameter(instrs[ic].operands[oc].s);
-		  }
-		 }
-		 emitter.AddInstruction(instrs[ic]);
-		 if (verbose)
-		  System.Console.WriteLine(emitter.CurrentLine-1 + " : " + instrs[ic]);
+		    for (int oc = 0; oc<instrs[ic].operands.GetLength(0);oc++){
+		var tempop = instrs[ic].operands[oc];
+		        switch (tempop.type){
+		            case ValType.stackReference:
+		                if (currScope.ContainVariable(tempop.s))
+		                    instrs[ic].operands[oc].i = currScope.GetStackIndexOfVariable(tempop.s) + tempop.i;
+		                else instrs[ic].operands[oc].i = currScope.GetStackIndexOfParameter(tempop.s);
+		                break;
+		            case ValType.arrayIndex:
+		                    var arrayindex = tempop.s.Split('|');
+		                    instrs[ic].operands[oc].i = currScope.GetStackIndexOfVariable(arrayindex[0]);
+		                    instrs[ic].operands[oc].arrid = currScope.GetStackIndexOfVariable(arrayindex[1]);
+		                break;
+		        }
+		    }
+		    emitter.AddInstruction(instrs[ic]);
+		    if (verbose)
+		        System.Console.WriteLine(emitter.CurrentLine-1 + " : " + instrs[ic]);
 		}
 		int stackeval = 0;
 		for (int ic = 0; ic< instrs.Count;ic++){
@@ -593,7 +617,8 @@ ScriptEmitter emitter;// = new ScriptEmit();
 		        SemErr("Stack corruption: pop < push");
 		    }
 		}
-		
+		varCount = currScope.variables.Count;
+		paramCount = currScope.parameters.Count;
 		func = new Function(entry,paramCount,varCount,funcname); 
 	}
 

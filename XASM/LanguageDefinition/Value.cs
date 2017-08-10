@@ -10,6 +10,9 @@
         arrayIndex
     }
 
+    /// <summary>
+    /// A value is everything from literal value to variable.
+    /// </summary>
     public class Value
     {
         public ValType type;
@@ -18,42 +21,88 @@
         public char c;
         public string s;
         public int arrid;
+
+        #region Constructor
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Value"/> class.
+        /// </summary>
         public Value()
         {
             type = ValType.intergerLiteral;
             Init();
         }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Value"/> class.
+        /// </summary>
+        /// <param name="t">The type.</param>
         public Value(ValType t)
         {
             type = t;
             Init();
         }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Value"/> class.
+        /// </summary>
+        /// <param name="i">The intergerLiteral.</param>
+        /// <param name="t">The type.</param>
         public Value(int i, ValType t = ValType.intergerLiteral)
         {
             type = t;
             this.i = i;
         }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Value"/> class.
+        /// </summary>
+        /// <param name="f">The floatLiteral.</param>
+        /// <param name="t">The type.</param>
         public Value (float f, ValType t = ValType.floatLiteral)
         {
             type = t;
             this.f = f;
         }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Value"/> class.
+        /// </summary>
+        /// <param name="c">The charLiteral.</param>
+        /// <param name="t">The type.</param>
         public Value (char c,ValType t = ValType.charLiteral)
         {
             type = t;
             this.c = c;
         }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Value"/> class.
+        /// </summary>
+        /// <param name="s">The stringLiteral.</param>
+        /// <param name="t">The type.</param>
         public Value(string s, ValType t = ValType.stringLiteral)
         {
             type = t;
             this.s = s;
         }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Value"/> class.
+        /// </summary>
+        /// <param name="i">The index of the first item in the array.</param>
+        /// <param name="arrayIndex">Index of the item in the array.</param>
+        /// <param name="t">The type.</param>
         public Value(int i,int arrayIndex, ValType t = ValType.arrayIndex)
         {
             type = t;
             this.i = i;
             this.arrid = arrayIndex;
         }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Value"/> class from another Value object.
+        /// </summary>
+        /// <param name="other">The other Value object.</param>
         public Value(Value other)
         {
             type = other.type;
@@ -63,6 +112,8 @@
             s = other.s;
             arrid = other.arrid;
         }
+        #endregion
+
         private void Init()
         {
             i = 0;
@@ -162,6 +213,8 @@
             }
         }
 
+
+        #region Check type
         /// <summary>
         /// Determines whether this Value's Type is .
         /// </summary>
@@ -240,6 +293,8 @@
             return type == ValType.stringLiteral;
         }
 
+        #endregion
+
         public override string ToString()
         {
             switch (type)
@@ -253,9 +308,9 @@
                 case ValType.stringLiteral:
                     return s;
                 case ValType.stackReference:
-                    return "stack[" + i + "]";
+                    return "stack<" + i + ">";
                 case ValType.arrayIndex:
-                    return "stack[" + (i + arrid) + "]";
+                    return "stack<" + i + ", " + arrid + ">";
                 default:
                     return "null";
             }
