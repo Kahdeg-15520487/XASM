@@ -101,6 +101,9 @@ namespace XASM
                                     case ValType.stackReference:
                                         operands[i] = new Value(br.ReadInt32(), ValType.stackReference);
                                         break;
+                                    case ValType.arrayIndex:
+                                        operands[i] = new Value(br.ReadInt32(), br.ReadInt32());
+                                        break;
                                     default:
                                         break;
                                 }
@@ -179,7 +182,7 @@ namespace XASM
              *      xxxx    <- interger literal         4 byte
              *     |xxxx    <- float lieral             4 byte
              *     |xx      <- char literal             2 byte
-             *     |xxxx    <- string table index       4 byte
+             *     |xxxx    <- string table index       4 byte   
              *     )
              *   }]
              * }
@@ -233,6 +236,10 @@ namespace XASM
                                     break;
                                 case ValType.stackReference:
                                     bw.Write(temp.i);
+                                    break;
+                                case ValType.arrayIndex:
+                                    bw.Write(temp.i);
+                                    bw.Write(temp.arrid);
                                     break;
                                 default:
                                     break;

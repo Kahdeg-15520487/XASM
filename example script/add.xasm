@@ -1,0 +1,26 @@
+func plus
+{
+	param a
+	param b
+	var s
+	mov s, a
+	add s, b
+	push s
+	callhost Print
+}
+
+func print
+{
+	param str
+	push str
+	callhost stdio.Print
+}
+
+func gt
+{
+	param v
+	var type
+	gettype type, v
+	push type
+	callhost stdio.Print
+}

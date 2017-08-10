@@ -1,0 +1,4 @@
+func main{
+	push "Hello world"
+	callhost Print
+}

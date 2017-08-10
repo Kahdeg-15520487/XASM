@@ -248,8 +248,23 @@ namespace XASM.VirtualMachine
                     return value;
                 case ValType.stackReference:
                     return ResolveStackReference(value);
+                case ValType.arrayIndex:
+                    return ResolveArrayIndex(value);
                 default:
                     throw new Exception("null");
+            }
+        }
+
+        private Value ResolveArrayIndex(Value value)
+        {
+            if (value.type == ValType.arrayIndex)
+            {
+                var arrid = ResolveStackIndex(value.arrid);
+                return ResolveStackIndex(value.i + arrid.i);
+            }
+            else
+            {
+                throw new Exception("this is not a array index");
             }
         }
 
@@ -257,34 +272,39 @@ namespace XASM.VirtualMachine
         {
             if (value.type == ValType.stackReference)
             {
-                //absolute stack index
-                if (value.i>=0)
-                {
-                    if (value.i> stack.topStackIndex)
-                    {
-                        Console.WriteLine("=====");
-                        Console.WriteLine(stacklog.ToString());
-                        Console.WriteLine("=====");
-                        throw new StackOverflowException(string.Format("Trying to access value out of the stack {0} stackReference: {1} {0} topStackIndex: {2}", Environment.NewLine, value.i, stack.topStackIndex));
-                    }
-                    return stack[value.i];
-                }
-                //relative stack index
-                else
-                {
-                    if (stack.topStackIndex + value.i<0)
-                    {
-                        Console.WriteLine("=====");
-                        Console.WriteLine(stacklog.ToString());
-                        Console.WriteLine("=====");
-                        throw new StackOverflowException(string.Format("Trying to access value out of the stack {0} stackReference: {1} {0} topStackIndex: {2}", Environment.NewLine, value.i, stack.topStackIndex));
-                    }
-                    return stack[stack.topStackIndex + value.i];
-                }
+                return ResolveStackIndex(value.i);
             }
             else
             {
                 throw new Exception("this is not a stack reference");
+            }
+        }
+
+        private Value ResolveStackIndex(int stackIndex)
+        {
+            //absolute stack index
+            if (stackIndex >= 0)
+            {
+                if (stackIndex > stack.topStackIndex)
+                {
+                    Console.WriteLine("=====");
+                    Console.WriteLine(stacklog.ToString());
+                    Console.WriteLine("=====");
+                    throw new StackOverflowException(string.Format("Trying to access value out of the stack {0} stackReference: {1} {0} topStackIndex: {2}", Environment.NewLine, stackIndex, stack.topStackIndex));
+                }
+                return stack[stackIndex];
+            }
+            //relative stack index
+            else
+            {
+                if (stack.topStackIndex + stackIndex < 0)
+                {
+                    Console.WriteLine("=====");
+                    Console.WriteLine(stacklog.ToString());
+                    Console.WriteLine("=====");
+                    throw new StackOverflowException(string.Format("Trying to access value out of the stack {0} stackReference: {1} {0} topStackIndex: {2}", Environment.NewLine, stackIndex, stack.topStackIndex));
+                }
+                return stack[stack.topStackIndex + stackIndex];
             }
         }
 
