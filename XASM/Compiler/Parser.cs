@@ -558,9 +558,11 @@ ScriptEmitter emitter;// = new ScriptEmit();
 		                else instrs[ic].operands[oc].i = currScope.GetStackIndexOfParameter(tempop.s);
 		                break;
 		            case ValType.arrayIndex:
-		                    var arrayindex = tempop.s.Split('|');
+		                var arrayindex = tempop.s.Split('|');
+		                if (currScope.ContainVariable(arrayindex[0])){
 		                    instrs[ic].operands[oc].i = currScope.GetStackIndexOfVariable(arrayindex[0]);
 		                    instrs[ic].operands[oc].arrid = currScope.GetStackIndexOfVariable(arrayindex[1]);
+		                }
 		                break;
 		        }
 		    }
@@ -623,12 +625,12 @@ ScriptEmitter emitter;// = new ScriptEmit();
 	}
 
 	void XASM() {
-		string name; Function func; int globalDataSize = 0; currScope = global; 
+		string name; Function func; currScope = global; 
 		currScope.AddVariable("retval"); 
 		while (la.kind == 11 || la.kind == 49) {
 			if (la.kind == 11) {
 				variableDeclare(out name);
-				globalDataSize++; 
+				
 			} else {
 				functionDeclare(out func);
 				int funcindex = emitter.AddFunction(func);
@@ -644,7 +646,7 @@ ScriptEmitter emitter;// = new ScriptEmit();
 			}
 		}
 		emitter.AddInstruction(new Instruction(OpCode.exit,new Value(0)));
-		emitter.globalDataSize = globalDataSize; 
+		emitter.globalDataSize = global.variables.Count; 
 		if (verbose){
 		System.Console.WriteLine("globalDataSize =" + emitter.globalDataSize);
 		System.Console.WriteLine("mainFuncIndex =" + emitter.mainFuncIndex);
