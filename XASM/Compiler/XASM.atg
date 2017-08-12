@@ -9,7 +9,6 @@ COMPILER XASM
 	ScriptEmitter emitter;// = new ScriptEmit();
 	Scope global = new Scope();
 	Scope currScope;
-	Dictionary<string,int> lineLabels = new Dictionary<string,int>();
 	List<HostAPILibrary> hapilibs = new List<HostAPILibrary>();
 
 // If you want your generated compiler case insensitive add the
@@ -233,7 +232,7 @@ instruction <out Instruction instr>						(. Value op1,op2,op3;
 
 functionDeclare <out Function func>						(. string name; string funcname = string.Empty; Instruction instr;
 														   List<Instruction> instrs = new List<Instruction>();
-														   Dictionary<string,int> linelabels = new Dictionary<string,int>();
+														   Dictionary<string,int> lineLabels = new Dictionary<string,int>();
 														   int paramCount = 0,varCount = 0,entry = emitter.CurrentLine;.)
 =	"func" identifier <out name>						(. currScope = global.AddScope(name);		//todo check function duplicate
 														   funcname = name; .)
@@ -244,22 +243,45 @@ functionDeclare <out Function func>						(. string name; string funcname = strin
 	|
 		variableDeclare	<out name>						(.  .)
 	|
-		linelabelDeclare <out name>						(. linelabels.Add(name,entry + instrs.Count); .)
+		linelabelDeclare <out name>						(. 
+					if (lineLabels.Keys.Contains(name))
+					    SemErr("Label already declared");
+					else
+					    lineLabels.Add(name,entry + instrs.Count); 
+.)
 	|	instruction	<out instr>							(. instrs.Add(instr); .)
 //todo check push pop and callhost to make stack safe
 	}
 														(. instrs.Add(new Instruction(OpCode.ret)); .)
 	closeBrace
-				(.	foreach (var kvp in linelabels){
-				        emitter.AddLineLabel(kvp.Key,kvp.Value);
-					}
+				(.	
 					if (verbose){
 				        System.Console.WriteLine();
 				        System.Console.WriteLine(currScope.ToString());
 					}
+
 					for (int ic = 0; ic< instrs.Count;ic++){
-				        for (int oc = 0; oc<instrs[ic].operands.GetLength(0);oc++){
-							var tempop = instrs[ic].operands[oc];
+					    var tempinstr = instrs[ic];
+					    switch (tempinstr.opcode)
+					    {
+					    	case OpCode.jmp:
+					    		instrs[ic].operands[0] = new Value(lineLabels[tempinstr.operands[0].s]);
+					    		break;
+
+					    	case OpCode.je:
+					    	case OpCode.jne:
+					    	case OpCode.jl:
+					    	case OpCode.jg:
+					    	case OpCode.jle:
+					    	case OpCode.jge:
+					    		instrs[ic].operands[2] = new Value(lineLabels[tempinstr.operands[2].s]);
+					    		break;
+
+					    	default:
+					    		break;
+					    }
+					    for (int oc = 0; oc<instrs[ic].operands.GetLength(0);oc++){
+					        var tempop = instrs[ic].operands[oc];
 				            switch (tempop.type){
 				                case ValType.stackReference:
 				                    if (currScope.ContainVariable(tempop.s))

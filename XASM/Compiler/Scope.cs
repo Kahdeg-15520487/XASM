@@ -12,6 +12,7 @@ namespace XASM.Compiler
         public Dictionary<string,Scope> childScopes;
         public List<string> variables;
         public List<string> parameters;
+        public Dictionary<string, int> lineLabels;
 
         public bool IsGlobalScope { get { return fatherScope == null; } }
 
@@ -21,6 +22,7 @@ namespace XASM.Compiler
             childScopes = new Dictionary<string, Scope>();
             variables = new List<string>();
             parameters = new List<string>();
+            lineLabels = new Dictionary<string, int>();
         }
 
         /// <summary>
@@ -53,6 +55,24 @@ namespace XASM.Compiler
             else
             {
                 return null;
+            }
+        }
+
+        /// <summary>
+        /// Adds the line label.
+        /// </summary>
+        /// <param name="linelabel">The linelabel.</param>
+        public void AddLineLabel(string linelabel, int line)
+        {
+            try
+            {
+                lineLabels.Add(linelabel, line);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(linelabel);
+                Console.WriteLine(e.Message);
+                throw e;
             }
         }
 

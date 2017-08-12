@@ -41,7 +41,6 @@ public class Parser {
 ScriptEmitter emitter;// = new ScriptEmit();
 	Scope global = new Scope();
 	Scope currScope;
-	Dictionary<string,int> lineLabels = new Dictionary<string,int>();
 	List<HostAPILibrary> hapilibs = new List<HostAPILibrary>();
 
 // If you want your generated compiler case insensitive add the
@@ -517,7 +516,7 @@ ScriptEmitter emitter;// = new ScriptEmit();
 	void functionDeclare(out Function func) {
 		string name; string funcname = string.Empty; Instruction instr;
 		List<Instruction> instrs = new List<Instruction>();
-		Dictionary<string,int> linelabels = new Dictionary<string,int>();
+		Dictionary<string,int> lineLabels = new Dictionary<string,int>();
 		int paramCount = 0,varCount = 0,entry = emitter.CurrentLine;
 		Expect(49);
 		identifier(out name);
@@ -533,7 +532,11 @@ ScriptEmitter emitter;// = new ScriptEmit();
 				
 			} else if (la.kind == 1) {
 				linelabelDeclare(out name);
-				linelabels.Add(name,entry + instrs.Count); 
+				if (lineLabels.Keys.Contains(name))
+				   SemErr("Label already declared");
+				else
+				   lineLabels.Add(name,entry + instrs.Count); 
+				
 			} else {
 				instruction(out instr);
 				instrs.Add(instr); 
@@ -541,87 +544,104 @@ ScriptEmitter emitter;// = new ScriptEmit();
 		}
 		instrs.Add(new Instruction(OpCode.ret)); 
 		Expect(10);
-		foreach (var kvp in linelabels){
-		    emitter.AddLineLabel(kvp.Key,kvp.Value);
-		}
 		if (verbose){
-		    System.Console.WriteLine();
-		    System.Console.WriteLine(currScope.ToString());
-		}
-		for (int ic = 0; ic< instrs.Count;ic++){
-		    for (int oc = 0; oc<instrs[ic].operands.GetLength(0);oc++){
-		var tempop = instrs[ic].operands[oc];
-		        switch (tempop.type){
-		            case ValType.stackReference:
-		                if (currScope.ContainVariable(tempop.s))
-		                    instrs[ic].operands[oc].i = currScope.GetStackIndexOfVariable(tempop.s) + tempop.i;
-		                else instrs[ic].operands[oc].i = currScope.GetStackIndexOfParameter(tempop.s);
-		                break;
-		            case ValType.arrayIndex:
-		                var arrayindex = tempop.s.Split('|');
-		                if (currScope.ContainVariable(arrayindex[0])){
-		                    instrs[ic].operands[oc].i = currScope.GetStackIndexOfVariable(arrayindex[0]);
-		                    instrs[ic].operands[oc].arrid = currScope.GetStackIndexOfVariable(arrayindex[1]);
-		                }
-		                break;
-		        }
-		    }
-		    emitter.AddInstruction(instrs[ic]);
-		    if (verbose)
-		        System.Console.WriteLine(emitter.CurrentLine-1 + " : " + instrs[ic]);
-		}
-		int stackeval = 0;
-		for (int ic = 0; ic< instrs.Count;ic++){
-		    switch (instrs[ic].opcode){
-		        case OpCode.push:
-		            stackeval++;
-		            break;
-		        case OpCode.pop:
-		            stackeval--;
-		            break;
-		        case OpCode.callhost:
-		            HostAPI hapi;
-		            string hapiname = emitter.hapitable[instrs[ic].operands[0].i];
-		            if (hapiname.Contains('.'))
-		            {
-		                var tttt = hapiname.Split('.');
-		                hapi = hapilibs.First(lib =>
-		                {
-		                    return string.Compare(lib.HAPILibraryName, tttt[0], true) == 0;
-		                }).GetAllHostAPI().First(h =>
-		                {
-		                    return string.Compare(h.HAPIname, tttt[1], true) == 0;
-		                });
-		            }
-		            else
-		            {
-		                hapi = hapilibs.First(lib =>
-		                {
-		                    return lib.ContainsHostAPI(hapiname);
-		                }).GetAllHostAPI().First(h =>
-		                {
-		                    return string.Compare(h.HAPIname, hapiname, true) == 0;
-		                });
-		            }
-		            stackeval -= hapi.paramCount;
-		            break;
-		    }
+		      System.Console.WriteLine();
+		      System.Console.WriteLine(currScope.ToString());
 		}
 		
-		if (stackeval < 0)
-		{
-		    SemErr("Stack corruption: pop > push");
-		}
-		else
-		{
-		    if (stackeval > 0)
-		    {
-		        SemErr("Stack corruption: pop < push");
-		    }
-		}
-		varCount = currScope.variables.Count;
-		paramCount = currScope.parameters.Count;
-		func = new Function(entry,paramCount,varCount,funcname); 
+		for (int ic = 0; ic< instrs.Count;ic++){
+		   var tempinstr = instrs[ic];
+		   switch (tempinstr.opcode)
+		   {
+		   	case OpCode.jmp:
+		   		instrs[ic].operands[0] = new Value(lineLabels[tempinstr.operands[0].s]);
+		   		break;
+		
+		   	case OpCode.je:
+		   	case OpCode.jne:
+		   	case OpCode.jl:
+		   	case OpCode.jg:
+		   	case OpCode.jle:
+		   	case OpCode.jge:
+		   		instrs[ic].operands[2] = new Value(lineLabels[tempinstr.operands[2].s]);
+		   		break;
+		
+		   	default:
+		   		break;
+		   }
+		   for (int oc = 0; oc<instrs[ic].operands.GetLength(0);oc++){
+		       var tempop = instrs[ic].operands[oc];
+		          switch (tempop.type){
+		              case ValType.stackReference:
+		                  if (currScope.ContainVariable(tempop.s))
+		                      instrs[ic].operands[oc].i = currScope.GetStackIndexOfVariable(tempop.s) + tempop.i;
+		                  else instrs[ic].operands[oc].i = currScope.GetStackIndexOfParameter(tempop.s);
+		                  break;
+		              case ValType.arrayIndex:
+		                  var arrayindex = tempop.s.Split('|');
+		                  if (currScope.ContainVariable(arrayindex[0])){
+		                      instrs[ic].operands[oc].i = currScope.GetStackIndexOfVariable(arrayindex[0]);
+		                      instrs[ic].operands[oc].arrid = currScope.GetStackIndexOfVariable(arrayindex[1]);
+		                  }
+		                  break;
+		          }
+		      }
+		      emitter.AddInstruction(instrs[ic]);
+		      if (verbose)
+		          System.Console.WriteLine(emitter.CurrentLine-1 + " : " + instrs[ic]);
+		  }
+		  int stackeval = 0;
+		  for (int ic = 0; ic< instrs.Count;ic++){
+		      switch (instrs[ic].opcode){
+		          case OpCode.push:
+		              stackeval++;
+		              break;
+		          case OpCode.pop:
+		              stackeval--;
+		              break;
+		          case OpCode.callhost:
+		              HostAPI hapi;
+		              string hapiname = emitter.hapitable[instrs[ic].operands[0].i];
+		              if (hapiname.Contains('.'))
+		              {
+		                  var tttt = hapiname.Split('.');
+		                  hapi = hapilibs.First(lib =>
+		                  {
+		                      return string.Compare(lib.HAPILibraryName, tttt[0], true) == 0;
+		                  }).GetAllHostAPI().First(h =>
+		                  {
+		                      return string.Compare(h.HAPIname, tttt[1], true) == 0;
+		                  });
+		              }
+		              else
+		              {
+		                  hapi = hapilibs.First(lib =>
+		                  {
+		                      return lib.ContainsHostAPI(hapiname);
+		                  }).GetAllHostAPI().First(h =>
+		                  {
+		                      return string.Compare(h.HAPIname, hapiname, true) == 0;
+		                  });
+		              }
+		              stackeval -= hapi.paramCount;
+		              break;
+		      }
+		  }
+		
+		  if (stackeval < 0)
+		  {
+		      SemErr("Stack corruption: pop > push");
+		  }
+		  else
+		  {
+		      if (stackeval > 0)
+		      {
+		          SemErr("Stack corruption: pop < push");
+		      }
+		  }
+		  varCount = currScope.variables.Count;
+		  paramCount = currScope.parameters.Count;
+		  func = new Function(entry,paramCount,varCount,funcname); 
 	}
 
 	void XASM() {
