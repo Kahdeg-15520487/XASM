@@ -310,13 +310,17 @@ namespace XASM.VirtualMachine
             }
         }
 
+        /// <summary>
+        /// Prints the stack from top to bottom.
+        /// </summary>
+        /// <returns></returns>
         public string PrintStack()
         {
             StringBuilder stringbuilder = new StringBuilder();
 
             for (int i = stack.topStackIndex - 1; i >= 0; i--)
             {
-                stringbuilder.AppendFormat("{0} {1}", i, stack[i].ToString());
+                stringbuilder.AppendFormat("{0}", stack[i].ToString());
                 stringbuilder.AppendLine();
             }
 
@@ -332,6 +336,7 @@ namespace XASM.VirtualMachine
                 return;
             }
 
+            #region init script
             int n = script.Length;
 
             foreach (var func in script.functiontable)
@@ -359,6 +364,7 @@ namespace XASM.VirtualMachine
 
             instrCounter = currFunc.entryPoint;
             PushStackFrame();
+            #endregion
 
             while (!isExit)
             {
@@ -691,9 +697,37 @@ namespace XASM.VirtualMachine
                 {
                     instrCounter++;
                 }
+                if (isVerbose)
+                {
+                    #region generate instruction log
 
-                stacklog.AppendLine(instr.ToString());
-                stacklog.AppendLine(PrintStack());
+                    //stacklog.AppendLine(instr.ToString());
+                    stacklog.AppendFormat("{0}", instr.opcode.ToString());
+                    for (int oc = 0; oc < instr.operands.GetLength(0); oc++)
+                    {
+                        var tempvalue = instr.operands[oc];
+                        switch (tempvalue.type)
+                        {
+                            case ValType.intergerLiteral:
+                            case ValType.floatLiteral:
+                            case ValType.charLiteral:
+                            case ValType.stringLiteral:
+                            case ValType.stackReference:
+                            case ValType.stackIndex:
+                                stacklog.AppendFormat(" {0}", tempvalue.ToString());
+                                break;
+                            case ValType.arrayIndex:
+                                stacklog.AppendFormat(" <{0},{1}>", tempvalue.i, ResolveStackIndex(tempvalue.arrid).i);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    stacklog.AppendLine();
+                    stacklog.AppendLine(PrintStack());
+
+                    #endregion
+                }
             }
 
             //exit code

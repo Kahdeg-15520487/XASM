@@ -313,9 +313,9 @@
                     return s;
                 case ValType.stackReference:
                 case ValType.stackIndex:
-                    return "stack<" + i + ">";
+                    return "<" + i + ">";
                 case ValType.arrayIndex:
-                    return "stack<" + i + ", " + arrid + ">";
+                    return "<" + i + ", " + arrid + ">";
                 default:
                     return "null";
             }
