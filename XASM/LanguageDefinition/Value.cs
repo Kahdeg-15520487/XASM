@@ -7,7 +7,8 @@
         charLiteral,
         stringLiteral,
         stackReference,
-        arrayIndex
+        arrayIndex,
+        stackIndex
     }
 
     /// <summary>
@@ -210,6 +211,9 @@
                     i = other.i;
                     arrid = other.arrid;
                     break;
+                case ValType.stackIndex:
+                    i = other.i;
+                    break;
             }
         }
 
@@ -308,6 +312,7 @@
                 case ValType.stringLiteral:
                     return s;
                 case ValType.stackReference:
+                case ValType.stackIndex:
                     return "stack<" + i + ">";
                 case ValType.arrayIndex:
                     return "stack<" + i + ", " + arrid + ">";

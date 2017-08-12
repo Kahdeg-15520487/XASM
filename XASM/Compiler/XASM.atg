@@ -47,6 +47,8 @@ openBracket = "[".
 closeBracket = "]".
 openBrace = "{".
 closeBrace = "}".
+leftanglebracket = '<'.
+rightanglebracket = '>'.
 
 
 PRAGMAS
@@ -93,7 +95,8 @@ identifier<out string name>
 
 operand <out Value operand> 							(.
 															operand = new Value(); 
-															string name; string name2; Value lit;
+															string name,name2; 
+															Value lit,lit2;
 														.)
 =	literal	<out lit>									(. operand.Assign(lit); .)
 |	identifier <out name>								(. operand.type = ValType.stackReference;
@@ -115,6 +118,25 @@ operand <out Value operand> 							(.
 		) 
 	closeBracket										
 ]
+|	leftanglebracket
+	literal <out lit>					(.	if (lit.IsInterger()){
+						                        operand.type = ValType.stackIndex;
+						                        operand.i = lit.i;
+											}
+											else{
+					                            SemErr("Stack direct index must be of type intergerLiteral");
+											}
+										.)
+	[	','
+		literal <out lit2>				(.	if (lit2.IsInterger()){
+						                        operand.i += lit2.i;
+											}
+											else{
+					                            SemErr("Stack direct index must be of type intergerLiteral");
+											}
+										.)
+	]
+	rightanglebracket
 .
 
 variableDeclare <out string name>						(.  .)

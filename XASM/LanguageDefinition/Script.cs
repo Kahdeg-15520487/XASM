@@ -104,6 +104,9 @@ namespace XASM
                                     case ValType.arrayIndex:
                                         operands[i] = new Value(br.ReadInt32(), br.ReadInt32());
                                         break;
+                                    case ValType.stackIndex:
+                                        operands[i] = new Value(br.ReadInt32(), ValType.stackIndex);
+                                        break;
                                     default:
                                         break;
                                 }
@@ -240,6 +243,9 @@ namespace XASM
                                 case ValType.arrayIndex:
                                     bw.Write(temp.i);
                                     bw.Write(temp.arrid);
+                                    break;
+                                case ValType.stackIndex:
+                                    bw.Write(temp.i);
                                     break;
                                 default:
                                     break;

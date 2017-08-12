@@ -250,6 +250,8 @@ namespace XASM.VirtualMachine
                     return ResolveStackReference(value);
                 case ValType.arrayIndex:
                     return ResolveArrayIndex(value);
+                case ValType.stackIndex:
+                    return ResolveStackIndex(value.i);
                 default:
                     throw new Exception("null");
             }
