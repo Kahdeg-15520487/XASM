@@ -152,6 +152,11 @@ namespace XASM.Compiler
                         break;
 
                     case OpCode.je:
+                    case OpCode.jne:
+                    case OpCode.jl:
+                    case OpCode.jg:
+                    case OpCode.jle:
+                    case OpCode.jge:
                         instr.operands[2] = new Value(lineLabels[instr.operands[2].s]);
                         break;
 

@@ -23,7 +23,7 @@ namespace testconsole
         {
             outputStream.WriteLine("Xin nhap");
             var temp = inputStream.ReadLine();
-            stack.GetReturnValue().Copy(new Value(temp));
+            stack.GetReturnValue().Assign(new Value(temp));
         }
     }
 }

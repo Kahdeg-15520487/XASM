@@ -269,16 +269,16 @@ Graph nodes:
  263 sem                 264              10327    0
  264 t    closeBrace     265                     252
  265 sem                   0              10392    0
- 266 sem                 267              13815    0
- 267 sem                 274              13907    0
- 268 nt   variableDecl   269              13985  340
- 269 sem                -274              14004    0
- 270 nt   functionDecl   271              14083  342
- 271 sem                -274              14120    0
+ 266 sem                 267              13816    0
+ 267 sem                 274              13884    0
+ 268 nt   variableDecl   269              13962  340
+ 269 sem                -274              13982    0
+ 270 nt   functionDecl   271              14043  342
+ 271 sem                -274              14080    0
  272 alt                -274   273   268         340
  273 alt                -274     0   270         342
  274 iter                275     0   272           0
- 275 sem                   0              14605    0
+ 275 sem                   0              14565    0
 
 
 First: node = 5

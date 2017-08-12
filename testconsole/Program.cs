@@ -80,7 +80,7 @@ namespace testconsole
             string sourcecode = arg.sourcecode;
 
             compiler compiler = new compiler();
-            Script script = compiler.Compile(sourcecode, arg.isverbose, new StandardInputOutputHostAPI(Console.In, Console.Out));
+            Script script = compiler.Compile(sourcecode, arg.isverbose, new StandardInputOutputHostAPI(Console.In, Console.Out), new NumberHostAPI());
             
             if (script == null)
             {
@@ -161,7 +161,7 @@ namespace testconsole
 
 
             virtualmachine vm = new virtualmachine(Console.In, Console.Out, isVerbose: isVerbose);
-            vm.Load(script, new StandardInputOutputHostAPI(Console.In, Console.Out));
+            vm.Load(script, new StandardInputOutputHostAPI(Console.In, Console.Out), new NumberHostAPI());
 
             Stopwatch sw = new Stopwatch();
             sw.Start();

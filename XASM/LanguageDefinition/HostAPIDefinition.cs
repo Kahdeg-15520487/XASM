@@ -12,7 +12,7 @@ namespace XASM
         protected TextReader inputStream;
         protected TextWriter outputStream;
 
-        public HostAPILibrary(TextReader input, TextWriter output,string hapilibname = null)
+        public HostAPILibrary(TextReader input = null, TextWriter output = null,string hapilibname = null)
         {
             inputStream = input;
             outputStream = output;
@@ -53,12 +53,14 @@ namespace XASM
         public string HAPIname { get; private set; }
         public int paramCount { get; private set; }
         public bool isReturn { get; private set; }
+        public string description { get; private set; }
 
-        public HostAPI(string hapiname = null, int paramcount = 1,bool isreturn = false)
+        public HostAPI(string hapiname = null, int paramcount = 1,bool isreturn = false,string desc = null)
         {
             HAPIname = hapiname;
             paramCount = paramcount;
             isReturn = isreturn;
+            description = desc;
         }
 
         public Function GetFunctionInfo()

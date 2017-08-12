@@ -267,8 +267,8 @@ functionDeclare <out Function func>						(. string name; string funcname = strin
 				                    else instrs[ic].operands[oc].i = currScope.GetStackIndexOfParameter(tempop.s);
 				                    break;
 				                case ValType.arrayIndex:
-				                    if (currScope.ContainVariable(tempop.s)){
-				                        var arrayindex = tempop.s.Split('|');
+				                    var arrayindex = tempop.s.Split('|');
+				                    if (currScope.ContainVariable(arrayindex[0])){
 				                        instrs[ic].operands[oc].i = currScope.GetStackIndexOfVariable(arrayindex[0]);
 				                        instrs[ic].operands[oc].arrid = currScope.GetStackIndexOfVariable(arrayindex[1]);
 				                    }
@@ -333,11 +333,11 @@ functionDeclare <out Function func>						(. string name; string funcname = strin
         func = new Function(entry,paramCount,varCount,funcname); .)
 .
 
-XASM=												(. string name; Function func; int globalDataSize = 0; currScope = global; .)
+XASM=												(. string name; Function func; currScope = global; .)
 													(. currScope.AddVariable("retval"); .)
 {
 //global variables
-	variableDeclare	<out name>							(. globalDataSize++; .)				//todo check variable duplicate
+	variableDeclare	<out name>							(.  .)				//todo check variable duplicate
 |	
 	functionDeclare <out func>							(.  
 															int funcindex = emitter.AddFunction(func);
@@ -352,7 +352,7 @@ XASM=												(. string name; Function func; int globalDataSize = 0; currScop
 														.)
 }
 														(. emitter.AddInstruction(new Instruction(OpCode.exit,new Value(0)));
-														   emitter.globalDataSize = globalDataSize; 
+														   emitter.globalDataSize = global.variables.Count; 
 										if (verbose){
 														   System.Console.WriteLine("globalDataSize =" + emitter.globalDataSize);
 														   System.Console.WriteLine("mainFuncIndex =" + emitter.mainFuncIndex);

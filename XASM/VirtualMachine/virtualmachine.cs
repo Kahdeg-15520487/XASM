@@ -640,6 +640,7 @@ namespace XASM.VirtualMachine
                             case OpCode.neg:
                                 firstOp.i = -firstOp.i;
                                 break;
+
                             case OpCode.inc:
                                 firstOp.i++;
                                 break;
