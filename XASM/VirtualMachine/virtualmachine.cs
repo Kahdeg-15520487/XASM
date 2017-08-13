@@ -364,6 +364,12 @@ namespace XASM.VirtualMachine
 
             instrCounter = currFunc.entryPoint;
             PushStackFrame();
+
+            if (isVerbose)
+            {
+                stacklog.AppendLine(PrintStack());
+            }
+
             #endregion
 
             while (!isExit)
@@ -717,7 +723,18 @@ namespace XASM.VirtualMachine
                                 stacklog.AppendFormat(" {0}", tempvalue.ToString());
                                 break;
                             case ValType.arrayIndex:
-                                stacklog.AppendFormat(" <{0},{1}>", tempvalue.i, ResolveStackIndex(tempvalue.arrid).i);
+                                switch (instr.opcode)
+                                {
+                                    case OpCode.push:
+                                        stacklog.AppendFormat(" <{0},{1}>", tempvalue.i, stack[stack.topStackIndex + tempvalue.arrid - 1].i);
+                                        break;
+                                    case OpCode.pop:
+                                        stacklog.AppendFormat(" <{0},{1}>", tempvalue.i, stack[stack.topStackIndex + tempvalue.arrid + 1].i);
+                                        break;
+                                    default:
+                                        stacklog.AppendFormat(" <{0},{1}>", tempvalue.i, stack[stack.topStackIndex + tempvalue.arrid].i);
+                                        break;
+                                } 
                                 break;
                             default:
                                 break;
