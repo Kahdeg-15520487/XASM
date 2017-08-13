@@ -15,17 +15,17 @@ branches:
   only:
   - master
  
-#build:
-#  publish_nuget: true
- 
 before_build:
   - nuget restore
  
-#deploy:
-#  provider: NuGet  
-#  api_key:
-#    secure: ueItpz8GrbP00/idHke1mVqPUxms1elvdVUhJRC8AV2JNtoEBF3znONhW+NPP2lG
-#  artifact: /.*\.nupkg/
+ build:
+  publish_nuget: true
+ 
+deploy:
+  provider: NuGet  
+  api_key:
+    secure: ueItpz8GrbP00/idHke1mVqPUxms1elvdVUhJRC8AV2JNtoEBF3znONhW+NPP2lG
+  artifact: /.*\.nupkg/
 
 artifacts:
   - path: 'testconsole\bin'
