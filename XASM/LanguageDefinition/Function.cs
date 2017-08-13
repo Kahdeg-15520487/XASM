@@ -1,5 +1,8 @@
 ﻿namespace XASM
 {
+    /// <summary>
+    /// A function definition in XASM
+    /// </summary>
     public class Function
     {
         public int entryPoint;

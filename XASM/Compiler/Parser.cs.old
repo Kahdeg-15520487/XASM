@@ -182,13 +182,24 @@ ScriptEmitter emitter;// = new ScriptEmit();
 			      SemErr("Stack direct index must be of type intergerLiteral");
 			}
 			
+			if (la.kind == 13) {
+				Get();
+				literal(out lit2);
+				if (lit2.IsInterger()){
+				  operand.i += lit2.i;
+				}
+				else{
+				     SemErr("Stack direct index must be of type intergerLiteral");
+				}
+				
+			}
 			Expect(12);
 		} else SynErr(55);
 	}
 
 	void variableDeclare(out string name) {
 		
-		Expect(13);
+		Expect(14);
 		identifier(out name);
 		Value lit;
 		currScope.AddVariable(name);
@@ -212,7 +223,7 @@ ScriptEmitter emitter;// = new ScriptEmit();
 	}
 
 	void parameterDeclare(out string name) {
-		Expect(14);
+		Expect(15);
 		identifier(out name);
 		currScope.AddParameter(name);
 		if (verbose)
@@ -231,10 +242,10 @@ ScriptEmitter emitter;// = new ScriptEmit();
 		string name;
 		instr = new Instruction(OpCode.ret);
 		switch (la.kind) {
-		case 15: {
+		case 16: {
 			Get();
 			operand(out op1);
-			Expect(16);
+			Expect(13);
 			operand(out op2);
 			instr = new Instruction(OpCode.mov, op1 ,op2); 
 			break;
@@ -242,7 +253,7 @@ ScriptEmitter emitter;// = new ScriptEmit();
 		case 17: {
 			Get();
 			operand(out op1);
-			Expect(16);
+			Expect(13);
 			operand(out op2);
 			instr  = new Instruction(OpCode.add, op1,op2); 
 			break;
@@ -250,7 +261,7 @@ ScriptEmitter emitter;// = new ScriptEmit();
 		case 18: {
 			Get();
 			operand(out op1);
-			Expect(16);
+			Expect(13);
 			operand(out op2);
 			instr  = new Instruction(OpCode.sub, op1,op2); 
 			break;
@@ -258,7 +269,7 @@ ScriptEmitter emitter;// = new ScriptEmit();
 		case 19: {
 			Get();
 			operand(out op1);
-			Expect(16);
+			Expect(13);
 			operand(out op2);
 			instr  = new Instruction(OpCode.mul, op1,op2); 
 			break;
@@ -266,7 +277,7 @@ ScriptEmitter emitter;// = new ScriptEmit();
 		case 20: {
 			Get();
 			operand(out op1);
-			Expect(16);
+			Expect(13);
 			operand(out op2);
 			instr  = new Instruction(OpCode.div, op1,op2); 
 			break;
@@ -274,7 +285,7 @@ ScriptEmitter emitter;// = new ScriptEmit();
 		case 21: {
 			Get();
 			operand(out op1);
-			Expect(16);
+			Expect(13);
 			operand(out op2);
 			instr  = new Instruction(OpCode.mod, op1,op2); 
 			break;
@@ -282,7 +293,7 @@ ScriptEmitter emitter;// = new ScriptEmit();
 		case 22: {
 			Get();
 			operand(out op1);
-			Expect(16);
+			Expect(13);
 			operand(out op2);
 			instr  = new Instruction(OpCode.exp, op1,op2); 
 			break;
@@ -290,7 +301,7 @@ ScriptEmitter emitter;// = new ScriptEmit();
 		case 23: {
 			Get();
 			operand(out op1);
-			Expect(16);
+			Expect(13);
 			operand(out op2);
 			instr  = new Instruction(OpCode.and, op1,op2); 
 			break;
@@ -298,7 +309,7 @@ ScriptEmitter emitter;// = new ScriptEmit();
 		case 24: {
 			Get();
 			operand(out op1);
-			Expect(16);
+			Expect(13);
 			operand(out op2);
 			instr  = new Instruction(OpCode.or, op1,op2); 
 			break;
@@ -306,7 +317,7 @@ ScriptEmitter emitter;// = new ScriptEmit();
 		case 25: {
 			Get();
 			operand(out op1);
-			Expect(16);
+			Expect(13);
 			operand(out op2);
 			instr  = new Instruction(OpCode.xor, op1,op2); 
 			break;
@@ -314,7 +325,7 @@ ScriptEmitter emitter;// = new ScriptEmit();
 		case 26: {
 			Get();
 			operand(out op1);
-			Expect(16);
+			Expect(13);
 			operand(out op2);
 			instr  = new Instruction(OpCode.shl, op1,op2); 
 			break;
@@ -322,7 +333,7 @@ ScriptEmitter emitter;// = new ScriptEmit();
 		case 27: {
 			Get();
 			operand(out op1);
-			Expect(16);
+			Expect(13);
 			operand(out op2);
 			instr  = new Instruction(OpCode.shr, op1,op2); 
 			break;
@@ -330,7 +341,7 @@ ScriptEmitter emitter;// = new ScriptEmit();
 		case 28: {
 			Get();
 			operand(out op1);
-			Expect(16);
+			Expect(13);
 			operand(out op2);
 			instr = new Instruction(OpCode.gettype, op1,op2); 
 			break;
@@ -338,7 +349,7 @@ ScriptEmitter emitter;// = new ScriptEmit();
 		case 29: {
 			Get();
 			operand(out op1);
-			Expect(16);
+			Expect(13);
 			operand(out op2);
 			instr = new Instruction(OpCode.concat, op1,op2); 
 			break;
@@ -446,9 +457,9 @@ ScriptEmitter emitter;// = new ScriptEmit();
 		case 43: {
 			Get();
 			operand(out op1);
-			Expect(16);
+			Expect(13);
 			operand(out op2);
-			Expect(16);
+			Expect(13);
 			identifier(out name);
 			instr  = new Instruction(OpCode.je,op1,op2,new Value(name)); 
 			break;
@@ -456,9 +467,9 @@ ScriptEmitter emitter;// = new ScriptEmit();
 		case 44: {
 			Get();
 			operand(out op1);
-			Expect(16);
+			Expect(13);
 			operand(out op2);
-			Expect(16);
+			Expect(13);
 			identifier(out name);
 			instr  = new Instruction(OpCode.jne,op1,op2,new Value(name)); 
 			break;
@@ -466,9 +477,9 @@ ScriptEmitter emitter;// = new ScriptEmit();
 		case 45: {
 			Get();
 			operand(out op1);
-			Expect(16);
+			Expect(13);
 			operand(out op2);
-			Expect(16);
+			Expect(13);
 			identifier(out name);
 			instr  = new Instruction(OpCode.jg,op1,op2,new Value(name)); 
 			break;
@@ -476,9 +487,9 @@ ScriptEmitter emitter;// = new ScriptEmit();
 		case 46: {
 			Get();
 			operand(out op1);
-			Expect(16);
+			Expect(13);
 			operand(out op2);
-			Expect(16);
+			Expect(13);
 			identifier(out name);
 			instr  = new Instruction(OpCode.jl,op1,op2,new Value(name)); 
 			break;
@@ -486,9 +497,9 @@ ScriptEmitter emitter;// = new ScriptEmit();
 		case 47: {
 			Get();
 			operand(out op1);
-			Expect(16);
+			Expect(13);
 			operand(out op2);
-			Expect(16);
+			Expect(13);
 			identifier(out name);
 			instr  = new Instruction(OpCode.jge,op1,op2,new Value(name)); 
 			break;
@@ -496,9 +507,9 @@ ScriptEmitter emitter;// = new ScriptEmit();
 		case 48: {
 			Get();
 			operand(out op1);
-			Expect(16);
+			Expect(13);
 			operand(out op2);
-			Expect(16);
+			Expect(13);
 			identifier(out name);
 			instr  = new Instruction(OpCode.jle,op1,op2,new Value(name)); 
 			break;
@@ -506,9 +517,9 @@ ScriptEmitter emitter;// = new ScriptEmit();
 		case 49: {
 			Get();
 			operand(out op1);
-			Expect(16);
+			Expect(13);
 			operand(out op2);
-			Expect(16);
+			Expect(13);
 			operand(out op3);
 			instr  = new Instruction(OpCode.getchar,op1,op2,op3); 
 			break;
@@ -516,9 +527,9 @@ ScriptEmitter emitter;// = new ScriptEmit();
 		case 50: {
 			Get();
 			operand(out op1);
-			Expect(16);
+			Expect(13);
 			operand(out op2);
-			Expect(16);
+			Expect(13);
 			operand(out op3);
 			instr  = new Instruction(OpCode.setchar,op1,op2,op3); 
 			break;
@@ -539,10 +550,10 @@ ScriptEmitter emitter;// = new ScriptEmit();
 		funcname = name; 
 		Expect(9);
 		while (StartOf(2)) {
-			if (la.kind == 14) {
+			if (la.kind == 15) {
 				parameterDeclare(out name);
 				
-			} else if (la.kind == 13) {
+			} else if (la.kind == 14) {
 				variableDeclare(out name);
 				
 			} else if (la.kind == 1) {
@@ -606,13 +617,18 @@ ScriptEmitter emitter;// = new ScriptEmit();
 		          System.Console.WriteLine(emitter.CurrentLine-1 + " : " + instrs[ic]);
 		  }
 		  int stackeval = 0;
+		  int pushcount = 0;
+		  int popcount = 0;
+		  int callhost_count = 0;
 		  for (int ic = 0; ic< instrs.Count;ic++){
 		      switch (instrs[ic].opcode){
 		          case OpCode.push:
 		              stackeval++;
+		              pushcount++;
 		              break;
 		          case OpCode.pop:
 		              stackeval--;
+		              popcount++;
 		              break;
 		          case OpCode.callhost:
 		              HostAPI hapi;
@@ -639,19 +655,20 @@ ScriptEmitter emitter;// = new ScriptEmit();
 		                  });
 		              }
 		              stackeval -= hapi.paramCount;
+		              callhost_count+=hapi.paramCount;
 		              break;
 		      }
 		  }
 		
 		  if (stackeval < 0)
 		  {
-		      SemErr("Stack corruption: pop > push");
+		      SemErr(string.Format("Stack corruption: pop > push{0} push count: {1}{0} pop count: {2}{0} callhost count: {3}{0}",System.Environment.NewLine,pushcount,popcount,callhost_count));
 		  }
 		  else
 		  {
 		      if (stackeval > 0)
 		      {
-		          SemErr("Stack corruption: pop < push");
+		          SemErr(string.Format("Stack corruption: pop < push{0} push count: {1}{0} pop count: {2}{0} callhost count: {3}{0}",System.Environment.NewLine,pushcount,popcount,callhost_count));
 		      }
 		  }
 		  varCount = currScope.variables.Count;
@@ -662,8 +679,8 @@ ScriptEmitter emitter;// = new ScriptEmit();
 	void XASM() {
 		string name; Function func; currScope = global; 
 		currScope.AddVariable("retval"); 
-		while (la.kind == 13 || la.kind == 51) {
-			if (la.kind == 13) {
+		while (la.kind == 14 || la.kind == 51) {
+			if (la.kind == 14) {
 				variableDeclare(out name);
 				
 			} else {
@@ -703,7 +720,7 @@ ScriptEmitter emitter;// = new ScriptEmit();
 	bool[,] set = {
 		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x},
 		{x,x,T,T, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x},
-		{x,T,x,x, x,x,x,x, x,x,x,x, x,T,T,T, x,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, x,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,x, x,x}
+		{x,T,x,x, x,x,x,x, x,x,x,x, x,x,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, x,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,x, x,x}
 
 	};
 } // end Parser
@@ -733,10 +750,10 @@ public class Errors {
 			case 10: s = "closeBrace expected"; break;
 			case 11: s = "leftanglebracket expected"; break;
 			case 12: s = "rightanglebracket expected"; break;
-			case 13: s = "\"var\" expected"; break;
-			case 14: s = "\"param\" expected"; break;
-			case 15: s = "\"mov\" expected"; break;
-			case 16: s = "\",\" expected"; break;
+			case 13: s = "\",\" expected"; break;
+			case 14: s = "\"var\" expected"; break;
+			case 15: s = "\"param\" expected"; break;
+			case 16: s = "\"mov\" expected"; break;
 			case 17: s = "\"add\" expected"; break;
 			case 18: s = "\"sub\" expected"; break;
 			case 19: s = "\"mul\" expected"; break;

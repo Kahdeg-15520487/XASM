@@ -326,9 +326,9 @@ public class Scanner {
 
 	void CheckLiteral() {
 		switch (t.val.ToLower()) {
-			case "var": t.kind = 13; break;
-			case "param": t.kind = 14; break;
-			case "mov": t.kind = 15; break;
+			case "var": t.kind = 14; break;
+			case "param": t.kind = 15; break;
+			case "mov": t.kind = 16; break;
 			case "add": t.kind = 17; break;
 			case "sub": t.kind = 18; break;
 			case "mul": t.kind = 19; break;
@@ -444,7 +444,7 @@ public class Scanner {
 				if (ch >= '0' && ch <= '9') {AddCh(); goto case 18;}
 				else {goto case 0;}
 			case 20:
-				{t.kind = 16; break;}
+				{t.kind = 13; break;}
 			case 21:
 				{t.kind = 32; break;}
 

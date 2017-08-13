@@ -7,6 +7,9 @@ using System.Text;
 
 namespace XASM.VirtualMachine
 {
+    /// <summary>
+    /// A virtual machine to run an object of type Script
+    /// </summary>
     public class virtualmachine
     {
         #region runtime config
@@ -48,7 +51,8 @@ namespace XASM.VirtualMachine
         public int exitCode { get; private set; } = 0;
         #endregion
 
-        #region test script
+        #region legacy test script
+        [Obsolete("this method is a legacy through the day before the compiler arrive and will remain as an remainder for future generation",true)]
         public void InitTestScript()
         {
             string[] code;
@@ -74,9 +78,6 @@ namespace XASM.VirtualMachine
             #endregion
 
             #region test jump
-
-
-
             /*0 mov stack<0> 1
              *1 jumpEqual stack<0> 10 3
              *2 jump 0
@@ -190,6 +191,12 @@ namespace XASM.VirtualMachine
         }
         #endregion
 
+        /// <summary>
+        /// Inialize a XASM virtual machine aka vm
+        /// </summary>
+        /// <param name="input">where the vm will receive input from</param>
+        /// <param name="output">where the vm will write output to</param>
+        /// <param name="isVerbose">whether or not the vm should log the stack</param>
         public virtualmachine(TextReader input = null,TextWriter output = null,bool isVerbose = false)
         {
             outputStream = output != null ? output : Console.Out;
@@ -197,6 +204,11 @@ namespace XASM.VirtualMachine
             this.isVerbose = isVerbose;
         }
 
+        /// <summary>
+        /// Load the script and its dependancy into the vm
+        /// </summary>
+        /// <param name="script">the script to run</param>
+        /// <param name="hapilib">the script's dependancy</param>
         public void Load(Script script, params HostAPILibrary[] hapilib)
         {
             this.script = script;
@@ -224,7 +236,6 @@ namespace XASM.VirtualMachine
         #endregion
 
         #region stack helper function
-
         private int PushStackFrame()
         {
             stack.topStackIndex += currFunc.varCount + 1;
@@ -328,6 +339,11 @@ namespace XASM.VirtualMachine
         }
         #endregion
 
+        /// <summary>
+        /// Run the script that is loaded inside the vm
+        /// </summary>
+        /// <param name="functionName">the entry function to run, default to "main"</param>
+        /// <param name="parameters">the parameters for the entry function</param>
         public void Run(string functionName = "main",params Value[] parameters)
         {
             if (script == null)
@@ -367,6 +383,7 @@ namespace XASM.VirtualMachine
 
             if (isVerbose)
             {
+                stacklog.AppendLine("call");
                 stacklog.AppendLine(PrintStack());
             }
 

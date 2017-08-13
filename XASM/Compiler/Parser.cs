@@ -617,13 +617,18 @@ ScriptEmitter emitter;// = new ScriptEmit();
 		          System.Console.WriteLine(emitter.CurrentLine-1 + " : " + instrs[ic]);
 		  }
 		  int stackeval = 0;
+		  int pushcount = 0;
+		  int popcount = 0;
+		  int callhost_count = 0;
 		  for (int ic = 0; ic< instrs.Count;ic++){
 		      switch (instrs[ic].opcode){
 		          case OpCode.push:
 		              stackeval++;
+		              pushcount++;
 		              break;
 		          case OpCode.pop:
 		              stackeval--;
+		              popcount++;
 		              break;
 		          case OpCode.callhost:
 		              HostAPI hapi;
@@ -650,19 +655,20 @@ ScriptEmitter emitter;// = new ScriptEmit();
 		                  });
 		              }
 		              stackeval -= hapi.paramCount;
+		              callhost_count+=hapi.paramCount;
 		              break;
 		      }
 		  }
 		
 		  if (stackeval < 0)
 		  {
-		      SemErr("Stack corruption: pop > push");
+		      SemErr(string.Format("Stack corruption: pop > push{0} push count: {1}{0} pop count: {2}{0} callhost count: {3}{0}",System.Environment.NewLine,pushcount,popcount,callhost_count));
 		  }
 		  else
 		  {
 		      if (stackeval > 0)
 		      {
-		          SemErr("Stack corruption: pop < push");
+		          SemErr(string.Format("Stack corruption: pop < push{0} push count: {1}{0} pop count: {2}{0} callhost count: {3}{0}",System.Environment.NewLine,pushcount,popcount,callhost_count));
 		      }
 		  }
 		  varCount = currScope.variables.Count;
