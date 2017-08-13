@@ -18,7 +18,7 @@ branches:
 before_build:
   - nuget restore
  
- build:
+build:
   publish_nuget: true
  
 deploy:
