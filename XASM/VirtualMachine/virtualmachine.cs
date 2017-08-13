@@ -7,6 +7,9 @@ using System.Text;
 
 namespace XASM.VirtualMachine
 {
+    /// <summary>
+    /// A virtual machine to run an object of type Script
+    /// </summary>
     public class virtualmachine
     {
         #region runtime config
@@ -48,7 +51,8 @@ namespace XASM.VirtualMachine
         public int exitCode { get; private set; } = 0;
         #endregion
 
-        #region test script
+        #region legacy test script
+        [Obsolete("this method is a legacy through the day before the compiler arrive and will remain as an remainder for future generation",true)]
         public void InitTestScript()
         {
             string[] code;
@@ -74,9 +78,6 @@ namespace XASM.VirtualMachine
             #endregion
 
             #region test jump
-
-
-
             /*0 mov stack<0> 1
              *1 jumpEqual stack<0> 10 3
              *2 jump 0
@@ -190,6 +191,12 @@ namespace XASM.VirtualMachine
         }
         #endregion
 
+        /// <summary>
+        /// Inialize a XASM virtual machine aka vm
+        /// </summary>
+        /// <param name="input">where the vm will receive input from</param>
+        /// <param name="output">where the vm will write output to</param>
+        /// <param name="isVerbose">whether or not the vm should log the stack</param>
         public virtualmachine(TextReader input = null,TextWriter output = null,bool isVerbose = false)
         {
             outputStream = output != null ? output : Console.Out;
@@ -197,6 +204,11 @@ namespace XASM.VirtualMachine
             this.isVerbose = isVerbose;
         }
 
+        /// <summary>
+        /// Load the script and its dependancy into the vm
+        /// </summary>
+        /// <param name="script">the script to run</param>
+        /// <param name="hapilib">the script's dependancy</param>
         public void Load(Script script, params HostAPILibrary[] hapilib)
         {
             this.script = script;
@@ -224,7 +236,6 @@ namespace XASM.VirtualMachine
         #endregion
 
         #region stack helper function
-
         private int PushStackFrame()
         {
             stack.topStackIndex += currFunc.varCount + 1;
@@ -250,6 +261,8 @@ namespace XASM.VirtualMachine
                     return ResolveStackReference(value);
                 case ValType.arrayIndex:
                     return ResolveArrayIndex(value);
+                case ValType.stackIndex:
+                    return ResolveStackIndex(value.i);
                 default:
                     throw new Exception("null");
             }
@@ -308,13 +321,17 @@ namespace XASM.VirtualMachine
             }
         }
 
+        /// <summary>
+        /// Prints the stack from top to bottom.
+        /// </summary>
+        /// <returns></returns>
         public string PrintStack()
         {
             StringBuilder stringbuilder = new StringBuilder();
 
             for (int i = stack.topStackIndex - 1; i >= 0; i--)
             {
-                stringbuilder.AppendFormat("{0} {1}", i, stack[i].ToString());
+                stringbuilder.AppendFormat("{0}", stack[i].ToString());
                 stringbuilder.AppendLine();
             }
 
@@ -322,6 +339,11 @@ namespace XASM.VirtualMachine
         }
         #endregion
 
+        /// <summary>
+        /// Run the script that is loaded inside the vm
+        /// </summary>
+        /// <param name="functionName">the entry function to run, default to "main"</param>
+        /// <param name="parameters">the parameters for the entry function</param>
         public void Run(string functionName = "main",params Value[] parameters)
         {
             if (script == null)
@@ -330,6 +352,7 @@ namespace XASM.VirtualMachine
                 return;
             }
 
+            #region init script
             int n = script.Length;
 
             foreach (var func in script.functiontable)
@@ -357,6 +380,14 @@ namespace XASM.VirtualMachine
 
             instrCounter = currFunc.entryPoint;
             PushStackFrame();
+
+            if (isVerbose)
+            {
+                stacklog.AppendLine("call");
+                stacklog.AppendLine(PrintStack());
+            }
+
+            #endregion
 
             while (!isExit)
             {
@@ -689,9 +720,48 @@ namespace XASM.VirtualMachine
                 {
                     instrCounter++;
                 }
+                if (isVerbose)
+                {
+                    #region generate instruction log
 
-                stacklog.AppendLine(instr.ToString());
-                stacklog.AppendLine(PrintStack());
+                    //stacklog.AppendLine(instr.ToString());
+                    stacklog.AppendFormat("{0}", instr.opcode.ToString());
+                    for (int oc = 0; oc < instr.operands.GetLength(0); oc++)
+                    {
+                        var tempvalue = instr.operands[oc];
+                        switch (tempvalue.type)
+                        {
+                            case ValType.intergerLiteral:
+                            case ValType.floatLiteral:
+                            case ValType.charLiteral:
+                            case ValType.stringLiteral:
+                            case ValType.stackReference:
+                            case ValType.stackIndex:
+                                stacklog.AppendFormat(" {0}", tempvalue.ToString());
+                                break;
+                            case ValType.arrayIndex:
+                                switch (instr.opcode)
+                                {
+                                    case OpCode.push:
+                                        stacklog.AppendFormat(" <{0},{1}>", tempvalue.i, stack[stack.topStackIndex + tempvalue.arrid - 1].i);
+                                        break;
+                                    case OpCode.pop:
+                                        stacklog.AppendFormat(" <{0},{1}>", tempvalue.i, stack[stack.topStackIndex + tempvalue.arrid + 1].i);
+                                        break;
+                                    default:
+                                        stacklog.AppendFormat(" <{0},{1}>", tempvalue.i, stack[stack.topStackIndex + tempvalue.arrid].i);
+                                        break;
+                                } 
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    stacklog.AppendLine();
+                    stacklog.AppendLine(PrintStack());
+
+                    #endregion
+                }
             }
 
             //exit code

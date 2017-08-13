@@ -23,7 +23,9 @@ public class Parser {
 	public const int _closeBracket = 8;
 	public const int _openBrace = 9;
 	public const int _closeBrace = 10;
-	public const int maxT = 50;
+	public const int _leftanglebracket = 11;
+	public const int _rightanglebracket = 12;
+	public const int maxT = 52;
 
 	const bool T = true;
 	const bool x = false;
@@ -41,7 +43,6 @@ public class Parser {
 ScriptEmitter emitter;// = new ScriptEmit();
 	Scope global = new Scope();
 	Scope currScope;
-	Dictionary<string,int> lineLabels = new Dictionary<string,int>();
 	List<HostAPILibrary> hapilibs = new List<HostAPILibrary>();
 
 // If you want your generated compiler case insensitive add the
@@ -128,7 +129,7 @@ ScriptEmitter emitter;// = new ScriptEmit();
 			temp = t.val.Remove(t.val.Length-1,1).Remove(0,1);
 			lit = new Value(emitter.AddString(temp),ValType.stringLiteral);
 			
-		} else SynErr(51);
+		} else SynErr(53);
 	}
 
 	void identifier(out string name) {
@@ -138,7 +139,8 @@ ScriptEmitter emitter;// = new ScriptEmit();
 
 	void operand(out Value operand) {
 		operand = new Value(); 
-		string name; string name2; Value lit;
+		string name,name2; 
+		Value lit,lit2;
 		
 		if (StartOf(1)) {
 			literal(out lit);
@@ -166,15 +168,38 @@ ScriptEmitter emitter;// = new ScriptEmit();
 					identifier(out name2);
 					operand.type = ValType.arrayIndex;
 					operand.s +='|' + name2; 
-				} else SynErr(52);
+				} else SynErr(54);
 				Expect(8);
 			}
-		} else SynErr(53);
+		} else if (la.kind == 11) {
+			Get();
+			literal(out lit);
+			if (lit.IsInterger()){
+			   operand.type = ValType.stackIndex;
+			   operand.i = lit.i;
+			}
+			else{
+			      SemErr("Stack direct index must be of type intergerLiteral");
+			}
+			
+			if (la.kind == 13) {
+				Get();
+				literal(out lit2);
+				if (lit2.IsInterger()){
+				  operand.i += lit2.i;
+				}
+				else{
+				     SemErr("Stack direct index must be of type intergerLiteral");
+				}
+				
+			}
+			Expect(12);
+		} else SynErr(55);
 	}
 
 	void variableDeclare(out string name) {
 		
-		Expect(11);
+		Expect(14);
 		identifier(out name);
 		Value lit;
 		currScope.AddVariable(name);
@@ -198,7 +223,7 @@ ScriptEmitter emitter;// = new ScriptEmit();
 	}
 
 	void parameterDeclare(out string name) {
-		Expect(12);
+		Expect(15);
 		identifier(out name);
 		currScope.AddParameter(name);
 		if (verbose)
@@ -217,125 +242,125 @@ ScriptEmitter emitter;// = new ScriptEmit();
 		string name;
 		instr = new Instruction(OpCode.ret);
 		switch (la.kind) {
-		case 13: {
-			Get();
-			operand(out op1);
-			Expect(14);
-			operand(out op2);
-			instr = new Instruction(OpCode.mov, op1 ,op2); 
-			break;
-		}
-		case 15: {
-			Get();
-			operand(out op1);
-			Expect(14);
-			operand(out op2);
-			instr  = new Instruction(OpCode.add, op1,op2); 
-			break;
-		}
 		case 16: {
 			Get();
 			operand(out op1);
-			Expect(14);
+			Expect(13);
 			operand(out op2);
-			instr  = new Instruction(OpCode.sub, op1,op2); 
+			instr = new Instruction(OpCode.mov, op1 ,op2); 
 			break;
 		}
 		case 17: {
 			Get();
 			operand(out op1);
-			Expect(14);
+			Expect(13);
 			operand(out op2);
-			instr  = new Instruction(OpCode.mul, op1,op2); 
+			instr  = new Instruction(OpCode.add, op1,op2); 
 			break;
 		}
 		case 18: {
 			Get();
 			operand(out op1);
-			Expect(14);
+			Expect(13);
 			operand(out op2);
-			instr  = new Instruction(OpCode.div, op1,op2); 
+			instr  = new Instruction(OpCode.sub, op1,op2); 
 			break;
 		}
 		case 19: {
 			Get();
 			operand(out op1);
-			Expect(14);
+			Expect(13);
 			operand(out op2);
-			instr  = new Instruction(OpCode.mod, op1,op2); 
+			instr  = new Instruction(OpCode.mul, op1,op2); 
 			break;
 		}
 		case 20: {
 			Get();
 			operand(out op1);
-			Expect(14);
+			Expect(13);
 			operand(out op2);
-			instr  = new Instruction(OpCode.exp, op1,op2); 
+			instr  = new Instruction(OpCode.div, op1,op2); 
 			break;
 		}
 		case 21: {
 			Get();
 			operand(out op1);
-			Expect(14);
+			Expect(13);
 			operand(out op2);
-			instr  = new Instruction(OpCode.and, op1,op2); 
+			instr  = new Instruction(OpCode.mod, op1,op2); 
 			break;
 		}
 		case 22: {
 			Get();
 			operand(out op1);
-			Expect(14);
+			Expect(13);
 			operand(out op2);
-			instr  = new Instruction(OpCode.or, op1,op2); 
+			instr  = new Instruction(OpCode.exp, op1,op2); 
 			break;
 		}
 		case 23: {
 			Get();
 			operand(out op1);
-			Expect(14);
+			Expect(13);
 			operand(out op2);
-			instr  = new Instruction(OpCode.xor, op1,op2); 
+			instr  = new Instruction(OpCode.and, op1,op2); 
 			break;
 		}
 		case 24: {
 			Get();
 			operand(out op1);
-			Expect(14);
+			Expect(13);
 			operand(out op2);
-			instr  = new Instruction(OpCode.shl, op1,op2); 
+			instr  = new Instruction(OpCode.or, op1,op2); 
 			break;
 		}
 		case 25: {
 			Get();
 			operand(out op1);
-			Expect(14);
+			Expect(13);
 			operand(out op2);
-			instr  = new Instruction(OpCode.shr, op1,op2); 
+			instr  = new Instruction(OpCode.xor, op1,op2); 
 			break;
 		}
 		case 26: {
 			Get();
 			operand(out op1);
-			Expect(14);
+			Expect(13);
 			operand(out op2);
-			instr = new Instruction(OpCode.gettype, op1,op2); 
+			instr  = new Instruction(OpCode.shl, op1,op2); 
 			break;
 		}
 		case 27: {
 			Get();
 			operand(out op1);
-			Expect(14);
+			Expect(13);
+			operand(out op2);
+			instr  = new Instruction(OpCode.shr, op1,op2); 
+			break;
+		}
+		case 28: {
+			Get();
+			operand(out op1);
+			Expect(13);
+			operand(out op2);
+			instr = new Instruction(OpCode.gettype, op1,op2); 
+			break;
+		}
+		case 29: {
+			Get();
+			operand(out op1);
+			Expect(13);
 			operand(out op2);
 			instr = new Instruction(OpCode.concat, op1,op2); 
 			break;
 		}
-		case 28: {
+		case 30: {
 			Get();
 			identifier(out name);
 			instr  = new Instruction(OpCode.call, new Value(name,ValType.intergerLiteral)); 
 			break;
 		}
-		case 29: {
+		case 31: {
 			string name2;
 			Get();
 			identifier(out name);
@@ -356,7 +381,7 @@ ScriptEmitter emitter;// = new ScriptEmit();
 			SemErr("There is more than 1 HAPI library contains " + name);
 			break;
 			} 
-			if (la.kind == 30) {
+			if (la.kind == 32) {
 				Get();
 				identifier(out name2);
 				if (hapilibs.FirstOrDefault(hapilib=>
@@ -370,146 +395,146 @@ ScriptEmitter emitter;// = new ScriptEmit();
 			}
 			break;
 		}
-		case 31: {
+		case 33: {
 			Get();
 			operand(out op1);
 			instr  = new Instruction(OpCode.push, op1); 
 			break;
 		}
-		case 32: {
+		case 34: {
 			Get();
 			operand(out op1);
 			instr  = new Instruction(OpCode.pop, op1); 
 			break;
 		}
-		case 33: {
+		case 35: {
 			Get();
 			identifier(out name);
 			instr  = new Instruction(OpCode.jmp,new Value(name)); 
 			break;
 		}
-		case 34: {
+		case 36: {
 			Get();
 			operand(out op1);
 			instr  = new Instruction(OpCode.neg, op1); 
 			break;
 		}
-		case 35: {
+		case 37: {
 			Get();
 			operand(out op1);
 			instr  = new Instruction(OpCode.inc, op1); 
 			break;
 		}
-		case 36: {
+		case 38: {
 			Get();
 			operand(out op1);
 			instr  = new Instruction(OpCode.dec, op1); 
 			break;
 		}
-		case 37: {
+		case 39: {
 			Get();
 			operand(out op1);
 			instr  = new Instruction(OpCode.not, op1); 
 			break;
 		}
-		case 38: {
+		case 40: {
 			Get();
 			operand(out op1);
 			instr  = new Instruction(OpCode.pause, op1); 
 			break;
 		}
-		case 39: {
+		case 41: {
 			Get();
 			operand(out op1);
 			instr  = new Instruction(OpCode.exit, op1); 
 			break;
 		}
-		case 40: {
-			Get();
-			instr  = new Instruction(OpCode.ret); 
-			break;
-		}
-		case 41: {
-			Get();
-			operand(out op1);
-			Expect(14);
-			operand(out op2);
-			Expect(14);
-			identifier(out name);
-			instr  = new Instruction(OpCode.je,op1,op2,new Value(name)); 
-			break;
-		}
 		case 42: {
 			Get();
-			operand(out op1);
-			Expect(14);
-			operand(out op2);
-			Expect(14);
-			identifier(out name);
-			instr  = new Instruction(OpCode.jne,op1,op2,new Value(name)); 
+			instr  = new Instruction(OpCode.ret); 
 			break;
 		}
 		case 43: {
 			Get();
 			operand(out op1);
-			Expect(14);
+			Expect(13);
 			operand(out op2);
-			Expect(14);
+			Expect(13);
 			identifier(out name);
-			instr  = new Instruction(OpCode.jg,op1,op2,new Value(name)); 
+			instr  = new Instruction(OpCode.je,op1,op2,new Value(name)); 
 			break;
 		}
 		case 44: {
 			Get();
 			operand(out op1);
-			Expect(14);
+			Expect(13);
 			operand(out op2);
-			Expect(14);
+			Expect(13);
 			identifier(out name);
-			instr  = new Instruction(OpCode.jl,op1,op2,new Value(name)); 
+			instr  = new Instruction(OpCode.jne,op1,op2,new Value(name)); 
 			break;
 		}
 		case 45: {
 			Get();
 			operand(out op1);
-			Expect(14);
+			Expect(13);
 			operand(out op2);
-			Expect(14);
+			Expect(13);
 			identifier(out name);
-			instr  = new Instruction(OpCode.jge,op1,op2,new Value(name)); 
+			instr  = new Instruction(OpCode.jg,op1,op2,new Value(name)); 
 			break;
 		}
 		case 46: {
 			Get();
 			operand(out op1);
-			Expect(14);
+			Expect(13);
 			operand(out op2);
-			Expect(14);
+			Expect(13);
 			identifier(out name);
-			instr  = new Instruction(OpCode.jle,op1,op2,new Value(name)); 
+			instr  = new Instruction(OpCode.jl,op1,op2,new Value(name)); 
 			break;
 		}
 		case 47: {
 			Get();
 			operand(out op1);
-			Expect(14);
+			Expect(13);
 			operand(out op2);
-			Expect(14);
-			operand(out op3);
-			instr  = new Instruction(OpCode.getchar,op1,op2,op3); 
+			Expect(13);
+			identifier(out name);
+			instr  = new Instruction(OpCode.jge,op1,op2,new Value(name)); 
 			break;
 		}
 		case 48: {
 			Get();
 			operand(out op1);
-			Expect(14);
+			Expect(13);
 			operand(out op2);
-			Expect(14);
+			Expect(13);
+			identifier(out name);
+			instr  = new Instruction(OpCode.jle,op1,op2,new Value(name)); 
+			break;
+		}
+		case 49: {
+			Get();
+			operand(out op1);
+			Expect(13);
+			operand(out op2);
+			Expect(13);
+			operand(out op3);
+			instr  = new Instruction(OpCode.getchar,op1,op2,op3); 
+			break;
+		}
+		case 50: {
+			Get();
+			operand(out op1);
+			Expect(13);
+			operand(out op2);
+			Expect(13);
 			operand(out op3);
 			instr  = new Instruction(OpCode.setchar,op1,op2,op3); 
 			break;
 		}
-		default: SynErr(54); break;
+		default: SynErr(56); break;
 		}
 		
 	}
@@ -517,23 +542,27 @@ ScriptEmitter emitter;// = new ScriptEmit();
 	void functionDeclare(out Function func) {
 		string name; string funcname = string.Empty; Instruction instr;
 		List<Instruction> instrs = new List<Instruction>();
-		Dictionary<string,int> linelabels = new Dictionary<string,int>();
+		Dictionary<string,int> lineLabels = new Dictionary<string,int>();
 		int paramCount = 0,varCount = 0,entry = emitter.CurrentLine;
-		Expect(49);
+		Expect(51);
 		identifier(out name);
 		currScope = global.AddScope(name);		//todo check function duplicate
 		funcname = name; 
 		Expect(9);
 		while (StartOf(2)) {
-			if (la.kind == 12) {
+			if (la.kind == 15) {
 				parameterDeclare(out name);
 				
-			} else if (la.kind == 11) {
+			} else if (la.kind == 14) {
 				variableDeclare(out name);
 				
 			} else if (la.kind == 1) {
 				linelabelDeclare(out name);
-				linelabels.Add(name,entry + instrs.Count); 
+				if (lineLabels.Keys.Contains(name))
+				   SemErr("Label already declared");
+				else
+				   lineLabels.Add(name,entry + instrs.Count); 
+				
 			} else {
 				instruction(out instr);
 				instrs.Add(instr); 
@@ -541,94 +570,117 @@ ScriptEmitter emitter;// = new ScriptEmit();
 		}
 		instrs.Add(new Instruction(OpCode.ret)); 
 		Expect(10);
-		foreach (var kvp in linelabels){
-		    emitter.AddLineLabel(kvp.Key,kvp.Value);
-		}
 		if (verbose){
-		    System.Console.WriteLine();
-		    System.Console.WriteLine(currScope.ToString());
-		}
-		for (int ic = 0; ic< instrs.Count;ic++){
-		    for (int oc = 0; oc<instrs[ic].operands.GetLength(0);oc++){
-		var tempop = instrs[ic].operands[oc];
-		        switch (tempop.type){
-		            case ValType.stackReference:
-		                if (currScope.ContainVariable(tempop.s))
-		                    instrs[ic].operands[oc].i = currScope.GetStackIndexOfVariable(tempop.s) + tempop.i;
-		                else instrs[ic].operands[oc].i = currScope.GetStackIndexOfParameter(tempop.s);
-		                break;
-		            case ValType.arrayIndex:
-		                var arrayindex = tempop.s.Split('|');
-		                if (currScope.ContainVariable(arrayindex[0])){
-		                    instrs[ic].operands[oc].i = currScope.GetStackIndexOfVariable(arrayindex[0]);
-		                    instrs[ic].operands[oc].arrid = currScope.GetStackIndexOfVariable(arrayindex[1]);
-		                }
-		                break;
-		        }
-		    }
-		    emitter.AddInstruction(instrs[ic]);
-		    if (verbose)
-		        System.Console.WriteLine(emitter.CurrentLine-1 + " : " + instrs[ic]);
-		}
-		int stackeval = 0;
-		for (int ic = 0; ic< instrs.Count;ic++){
-		    switch (instrs[ic].opcode){
-		        case OpCode.push:
-		            stackeval++;
-		            break;
-		        case OpCode.pop:
-		            stackeval--;
-		            break;
-		        case OpCode.callhost:
-		            HostAPI hapi;
-		            string hapiname = emitter.hapitable[instrs[ic].operands[0].i];
-		            if (hapiname.Contains('.'))
-		            {
-		                var tttt = hapiname.Split('.');
-		                hapi = hapilibs.First(lib =>
-		                {
-		                    return string.Compare(lib.HAPILibraryName, tttt[0], true) == 0;
-		                }).GetAllHostAPI().First(h =>
-		                {
-		                    return string.Compare(h.HAPIname, tttt[1], true) == 0;
-		                });
-		            }
-		            else
-		            {
-		                hapi = hapilibs.First(lib =>
-		                {
-		                    return lib.ContainsHostAPI(hapiname);
-		                }).GetAllHostAPI().First(h =>
-		                {
-		                    return string.Compare(h.HAPIname, hapiname, true) == 0;
-		                });
-		            }
-		            stackeval -= hapi.paramCount;
-		            break;
-		    }
+		      System.Console.WriteLine();
+		      System.Console.WriteLine(currScope.ToString());
 		}
 		
-		if (stackeval < 0)
-		{
-		    SemErr("Stack corruption: pop > push");
-		}
-		else
-		{
-		    if (stackeval > 0)
-		    {
-		        SemErr("Stack corruption: pop < push");
-		    }
-		}
-		varCount = currScope.variables.Count;
-		paramCount = currScope.parameters.Count;
-		func = new Function(entry,paramCount,varCount,funcname); 
+		for (int ic = 0; ic< instrs.Count;ic++){
+		   var tempinstr = instrs[ic];
+		   switch (tempinstr.opcode)
+		   {
+		   	case OpCode.jmp:
+		   		instrs[ic].operands[0] = new Value(lineLabels[tempinstr.operands[0].s]);
+		   		break;
+		
+		   	case OpCode.je:
+		   	case OpCode.jne:
+		   	case OpCode.jl:
+		   	case OpCode.jg:
+		   	case OpCode.jle:
+		   	case OpCode.jge:
+		   		instrs[ic].operands[2] = new Value(lineLabels[tempinstr.operands[2].s]);
+		   		break;
+		
+		   	default:
+		   		break;
+		   }
+		   for (int oc = 0; oc<instrs[ic].operands.GetLength(0);oc++){
+		       var tempop = instrs[ic].operands[oc];
+		          switch (tempop.type){
+		              case ValType.stackReference:
+		                  if (currScope.ContainVariable(tempop.s))
+		                      instrs[ic].operands[oc].i = currScope.GetStackIndexOfVariable(tempop.s) + tempop.i;
+		                  else instrs[ic].operands[oc].i = currScope.GetStackIndexOfParameter(tempop.s);
+		                  break;
+		              case ValType.arrayIndex:
+		                  var arrayindex = tempop.s.Split('|');
+		                  if (currScope.ContainVariable(arrayindex[0])){
+		                      instrs[ic].operands[oc].i = currScope.GetStackIndexOfVariable(arrayindex[0]);
+		                      instrs[ic].operands[oc].arrid = currScope.GetStackIndexOfVariable(arrayindex[1]);
+		                  }
+		                  break;
+		          }
+		      }
+		      emitter.AddInstruction(instrs[ic]);
+		      if (verbose)
+		          System.Console.WriteLine(emitter.CurrentLine-1 + " : " + instrs[ic]);
+		  }
+		  int stackeval = 0;
+		  int pushcount = 0;
+		  int popcount = 0;
+		  int callhost_count = 0;
+		  for (int ic = 0; ic< instrs.Count;ic++){
+		      switch (instrs[ic].opcode){
+		          case OpCode.push:
+		              stackeval++;
+		              pushcount++;
+		              break;
+		          case OpCode.pop:
+		              stackeval--;
+		              popcount++;
+		              break;
+		          case OpCode.callhost:
+		              HostAPI hapi;
+		              string hapiname = emitter.hapitable[instrs[ic].operands[0].i];
+		              if (hapiname.Contains('.'))
+		              {
+		                  var tttt = hapiname.Split('.');
+		                  hapi = hapilibs.First(lib =>
+		                  {
+		                      return string.Compare(lib.HAPILibraryName, tttt[0], true) == 0;
+		                  }).GetAllHostAPI().First(h =>
+		                  {
+		                      return string.Compare(h.HAPIname, tttt[1], true) == 0;
+		                  });
+		              }
+		              else
+		              {
+		                  hapi = hapilibs.First(lib =>
+		                  {
+		                      return lib.ContainsHostAPI(hapiname);
+		                  }).GetAllHostAPI().First(h =>
+		                  {
+		                      return string.Compare(h.HAPIname, hapiname, true) == 0;
+		                  });
+		              }
+		              stackeval -= hapi.paramCount;
+		              callhost_count+=hapi.paramCount;
+		              break;
+		      }
+		  }
+		
+		  if (stackeval < 0)
+		  {
+		      SemErr(string.Format("Stack corruption: pop > push{0} push count: {1}{0} pop count: {2}{0} callhost count: {3}{0}",System.Environment.NewLine,pushcount,popcount,callhost_count));
+		  }
+		  else
+		  {
+		      if (stackeval > 0)
+		      {
+		          SemErr(string.Format("Stack corruption: pop < push{0} push count: {1}{0} pop count: {2}{0} callhost count: {3}{0}",System.Environment.NewLine,pushcount,popcount,callhost_count));
+		      }
+		  }
+		  varCount = currScope.variables.Count;
+		  paramCount = currScope.parameters.Count;
+		  func = new Function(entry,paramCount,varCount,funcname); 
 	}
 
 	void XASM() {
 		string name; Function func; currScope = global; 
 		currScope.AddVariable("retval"); 
-		while (la.kind == 11 || la.kind == 49) {
-			if (la.kind == 11) {
+		while (la.kind == 14 || la.kind == 51) {
+			if (la.kind == 14) {
 				variableDeclare(out name);
 				
 			} else {
@@ -666,9 +718,9 @@ ScriptEmitter emitter;// = new ScriptEmit();
 	}
 	
 	bool[,] set = {
-		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x},
-		{x,x,T,T, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x},
-		{x,T,x,x, x,x,x,x, x,x,x,T, T,T,x,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,x,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,x,x,x}
+		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x},
+		{x,x,T,T, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x},
+		{x,T,x,x, x,x,x,x, x,x,x,x, x,x,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, x,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,x, x,x}
 
 	};
 } // end Parser
@@ -696,50 +748,52 @@ public class Errors {
 			case 8: s = "closeBracket expected"; break;
 			case 9: s = "openBrace expected"; break;
 			case 10: s = "closeBrace expected"; break;
-			case 11: s = "\"var\" expected"; break;
-			case 12: s = "\"param\" expected"; break;
-			case 13: s = "\"mov\" expected"; break;
-			case 14: s = "\",\" expected"; break;
-			case 15: s = "\"add\" expected"; break;
-			case 16: s = "\"sub\" expected"; break;
-			case 17: s = "\"mul\" expected"; break;
-			case 18: s = "\"div\" expected"; break;
-			case 19: s = "\"mod\" expected"; break;
-			case 20: s = "\"exp\" expected"; break;
-			case 21: s = "\"and\" expected"; break;
-			case 22: s = "\"or\" expected"; break;
-			case 23: s = "\"xor\" expected"; break;
-			case 24: s = "\"shl\" expected"; break;
-			case 25: s = "\"shr\" expected"; break;
-			case 26: s = "\"gettype\" expected"; break;
-			case 27: s = "\"concat\" expected"; break;
-			case 28: s = "\"call\" expected"; break;
-			case 29: s = "\"callhost\" expected"; break;
-			case 30: s = "\".\" expected"; break;
-			case 31: s = "\"push\" expected"; break;
-			case 32: s = "\"pop\" expected"; break;
-			case 33: s = "\"jmp\" expected"; break;
-			case 34: s = "\"neg\" expected"; break;
-			case 35: s = "\"inc\" expected"; break;
-			case 36: s = "\"dec\" expected"; break;
-			case 37: s = "\"not\" expected"; break;
-			case 38: s = "\"pause\" expected"; break;
-			case 39: s = "\"exit\" expected"; break;
-			case 40: s = "\"ret\" expected"; break;
-			case 41: s = "\"je\" expected"; break;
-			case 42: s = "\"jne\" expected"; break;
-			case 43: s = "\"jg\" expected"; break;
-			case 44: s = "\"jl\" expected"; break;
-			case 45: s = "\"jge\" expected"; break;
-			case 46: s = "\"jle\" expected"; break;
-			case 47: s = "\"getchar\" expected"; break;
-			case 48: s = "\"setchar\" expected"; break;
-			case 49: s = "\"func\" expected"; break;
-			case 50: s = "??? expected"; break;
-			case 51: s = "invalid literal"; break;
-			case 52: s = "invalid operand"; break;
-			case 53: s = "invalid operand"; break;
-			case 54: s = "invalid instruction"; break;
+			case 11: s = "leftanglebracket expected"; break;
+			case 12: s = "rightanglebracket expected"; break;
+			case 13: s = "\",\" expected"; break;
+			case 14: s = "\"var\" expected"; break;
+			case 15: s = "\"param\" expected"; break;
+			case 16: s = "\"mov\" expected"; break;
+			case 17: s = "\"add\" expected"; break;
+			case 18: s = "\"sub\" expected"; break;
+			case 19: s = "\"mul\" expected"; break;
+			case 20: s = "\"div\" expected"; break;
+			case 21: s = "\"mod\" expected"; break;
+			case 22: s = "\"exp\" expected"; break;
+			case 23: s = "\"and\" expected"; break;
+			case 24: s = "\"or\" expected"; break;
+			case 25: s = "\"xor\" expected"; break;
+			case 26: s = "\"shl\" expected"; break;
+			case 27: s = "\"shr\" expected"; break;
+			case 28: s = "\"gettype\" expected"; break;
+			case 29: s = "\"concat\" expected"; break;
+			case 30: s = "\"call\" expected"; break;
+			case 31: s = "\"callhost\" expected"; break;
+			case 32: s = "\".\" expected"; break;
+			case 33: s = "\"push\" expected"; break;
+			case 34: s = "\"pop\" expected"; break;
+			case 35: s = "\"jmp\" expected"; break;
+			case 36: s = "\"neg\" expected"; break;
+			case 37: s = "\"inc\" expected"; break;
+			case 38: s = "\"dec\" expected"; break;
+			case 39: s = "\"not\" expected"; break;
+			case 40: s = "\"pause\" expected"; break;
+			case 41: s = "\"exit\" expected"; break;
+			case 42: s = "\"ret\" expected"; break;
+			case 43: s = "\"je\" expected"; break;
+			case 44: s = "\"jne\" expected"; break;
+			case 45: s = "\"jg\" expected"; break;
+			case 46: s = "\"jl\" expected"; break;
+			case 47: s = "\"jge\" expected"; break;
+			case 48: s = "\"jle\" expected"; break;
+			case 49: s = "\"getchar\" expected"; break;
+			case 50: s = "\"setchar\" expected"; break;
+			case 51: s = "\"func\" expected"; break;
+			case 52: s = "??? expected"; break;
+			case 53: s = "invalid literal"; break;
+			case 54: s = "invalid operand"; break;
+			case 55: s = "invalid operand"; break;
+			case 56: s = "invalid instruction"; break;
 
 			default: s = "error " + n; break;
 		}

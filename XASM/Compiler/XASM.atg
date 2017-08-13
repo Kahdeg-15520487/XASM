@@ -9,7 +9,6 @@ COMPILER XASM
 	ScriptEmitter emitter;// = new ScriptEmit();
 	Scope global = new Scope();
 	Scope currScope;
-	Dictionary<string,int> lineLabels = new Dictionary<string,int>();
 	List<HostAPILibrary> hapilibs = new List<HostAPILibrary>();
 
 // If you want your generated compiler case insensitive add the
@@ -48,6 +47,8 @@ openBracket = "[".
 closeBracket = "]".
 openBrace = "{".
 closeBrace = "}".
+leftanglebracket = '<'.
+rightanglebracket = '>'.
 
 
 PRAGMAS
@@ -94,7 +95,8 @@ identifier<out string name>
 
 operand <out Value operand> 							(.
 															operand = new Value(); 
-															string name; string name2; Value lit;
+															string name,name2; 
+															Value lit,lit2;
 														.)
 =	literal	<out lit>									(. operand.Assign(lit); .)
 |	identifier <out name>								(. operand.type = ValType.stackReference;
@@ -116,6 +118,25 @@ operand <out Value operand> 							(.
 		) 
 	closeBracket										
 ]
+|	leftanglebracket
+	literal <out lit>					(.	if (lit.IsInterger()){
+						                        operand.type = ValType.stackIndex;
+						                        operand.i = lit.i;
+											}
+											else{
+					                            SemErr("Stack direct index must be of type intergerLiteral");
+											}
+										.)
+	[	','
+		literal <out lit2>				(.	if (lit2.IsInterger()){
+						                        operand.i += lit2.i;
+											}
+											else{
+					                            SemErr("Stack direct index must be of type intergerLiteral");
+											}
+										.)
+	]
+	rightanglebracket
 .
 
 variableDeclare <out string name>						(.  .)
@@ -228,12 +249,14 @@ instruction <out Instruction instr>						(. Value op1,op2,op3;
 |	"setchar" operand <out op1> ',' operand <out op2> ',' operand <out op3>
 													(. instr  = new Instruction(OpCode.setchar,op1,op2,op3); .)
 )
-														(. .).
+(.//check type safety
+	
+.).
 
 
 functionDeclare <out Function func>						(. string name; string funcname = string.Empty; Instruction instr;
 														   List<Instruction> instrs = new List<Instruction>();
-														   Dictionary<string,int> linelabels = new Dictionary<string,int>();
+														   Dictionary<string,int> lineLabels = new Dictionary<string,int>();
 														   int paramCount = 0,varCount = 0,entry = emitter.CurrentLine;.)
 =	"func" identifier <out name>						(. currScope = global.AddScope(name);		//todo check function duplicate
 														   funcname = name; .)
@@ -244,22 +267,45 @@ functionDeclare <out Function func>						(. string name; string funcname = strin
 	|
 		variableDeclare	<out name>						(.  .)
 	|
-		linelabelDeclare <out name>						(. linelabels.Add(name,entry + instrs.Count); .)
+		linelabelDeclare <out name>						(. 
+					if (lineLabels.Keys.Contains(name))
+					    SemErr("Label already declared");
+					else
+					    lineLabels.Add(name,entry + instrs.Count); 
+.)
 	|	instruction	<out instr>							(. instrs.Add(instr); .)
 //todo check push pop and callhost to make stack safe
 	}
 														(. instrs.Add(new Instruction(OpCode.ret)); .)
 	closeBrace
-				(.	foreach (var kvp in linelabels){
-				        emitter.AddLineLabel(kvp.Key,kvp.Value);
-					}
+				(.	
 					if (verbose){
 				        System.Console.WriteLine();
 				        System.Console.WriteLine(currScope.ToString());
 					}
+
 					for (int ic = 0; ic< instrs.Count;ic++){
-				        for (int oc = 0; oc<instrs[ic].operands.GetLength(0);oc++){
-							var tempop = instrs[ic].operands[oc];
+					    var tempinstr = instrs[ic];
+					    switch (tempinstr.opcode)
+					    {
+					    	case OpCode.jmp:
+					    		instrs[ic].operands[0] = new Value(lineLabels[tempinstr.operands[0].s]);
+					    		break;
+
+					    	case OpCode.je:
+					    	case OpCode.jne:
+					    	case OpCode.jl:
+					    	case OpCode.jg:
+					    	case OpCode.jle:
+					    	case OpCode.jge:
+					    		instrs[ic].operands[2] = new Value(lineLabels[tempinstr.operands[2].s]);
+					    		break;
+
+					    	default:
+					    		break;
+					    }
+					    for (int oc = 0; oc<instrs[ic].operands.GetLength(0);oc++){
+					        var tempop = instrs[ic].operands[oc];
 				            switch (tempop.type){
 				                case ValType.stackReference:
 				                    if (currScope.ContainVariable(tempop.s))
@@ -280,13 +326,18 @@ functionDeclare <out Function func>						(. string name; string funcname = strin
 				            System.Console.WriteLine(emitter.CurrentLine-1 + " : " + instrs[ic]);
 				    }
         int stackeval = 0;
+        int pushcount = 0;
+        int popcount = 0;
+        int callhost_count = 0;
         for (int ic = 0; ic< instrs.Count;ic++){
             switch (instrs[ic].opcode){
                 case OpCode.push:
                     stackeval++;
+                    pushcount++;
                     break;
                 case OpCode.pop:
                     stackeval--;
+                    popcount++;
                     break;
                 case OpCode.callhost:
                     HostAPI hapi;
@@ -313,19 +364,20 @@ functionDeclare <out Function func>						(. string name; string funcname = strin
                         });
                     }
                     stackeval -= hapi.paramCount;
+                    callhost_count+=hapi.paramCount;
                     break;
             }
         }
 
         if (stackeval < 0)
         {
-            SemErr("Stack corruption: pop > push");
+            SemErr(string.Format("Stack corruption: pop > push{0} push count: {1}{0} pop count: {2}{0} callhost count: {3}{0}",System.Environment.NewLine,pushcount,popcount,callhost_count));
         }
         else
         {
             if (stackeval > 0)
             {
-                SemErr("Stack corruption: pop < push");
+                SemErr(string.Format("Stack corruption: pop < push{0} push count: {1}{0} pop count: {2}{0} callhost count: {3}{0}",System.Environment.NewLine,pushcount,popcount,callhost_count));
             }
         }
         varCount = currScope.variables.Count;

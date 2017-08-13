@@ -6,12 +6,27 @@ using System.Reflection;
 
 namespace XASM
 {
+    /// <summary>
+    /// An abstract class to define XASM's dependancy
+    /// </summary>
     public abstract class HostAPILibrary
     {
+        /// <summary>
+        /// Gets or sets the name of the HAPI library.
+        /// </summary>
+        /// <value>
+        /// The name of the HAPI library.
+        /// </value>
         public string HAPILibraryName { get; protected set; }
         protected TextReader inputStream;
         protected TextWriter outputStream;
 
+        /// <summary>
+        /// Initializes a new HostAPILibrary.
+        /// </summary>
+        /// <param name="input">The input stream.</param>
+        /// <param name="output">The output stream.</param>
+        /// <param name="hapilibname">The hapilibname.</param>
         public HostAPILibrary(TextReader input = null, TextWriter output = null,string hapilibname = null)
         {
             inputStream = input;
@@ -19,6 +34,11 @@ namespace XASM
             HAPILibraryName = hapilibname;
         }
 
+        /// <summary>
+        /// Determines whether this HostAPILibrary contains a HAPI with name
+        /// </summary>
+        /// <seealso cref="HostAPI">
+        /// <param name="name">The name.</param>
         public bool ContainsHostAPI(string name)
         {
             return GetAllHostAPI().FirstOrDefault(hapi =>
@@ -27,6 +47,10 @@ namespace XASM
             }) != null;
         }
 
+        /// <summary>
+        /// Gets all host API.
+        /// </summary>
+        /// <returns>An array of <seealso cref="HostAPI"></returns>
         public HostAPI[] GetAllHostAPI()
         {
             List<HostAPI> result = new List<HostAPI>();

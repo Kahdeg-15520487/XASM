@@ -10,8 +10,6 @@ namespace XASM.Compiler
         public List<string> stringtable;
         public List<string> hapitable;
 
-        public Dictionary<string, int> lineLabels;
-
         public int globalDataSize;
         public int mainFuncIndex = -1;
 
@@ -29,7 +27,6 @@ namespace XASM.Compiler
             functiontable = new List<Function>();
             stringtable = new List<string>();
             hapitable = new List<string>();
-            lineLabels = new Dictionary<string, int>();
         }
 
         /// <summary>
@@ -100,24 +97,6 @@ namespace XASM.Compiler
             }
         }
 
-        /// <summary>
-        /// Adds the line label.
-        /// </summary>
-        /// <param name="linelabel">The linelabel.</param>
-        public void AddLineLabel(string linelabel,int line)
-        {
-            try
-            {
-                lineLabels.Add(linelabel, line);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(linelabel);
-                Console.WriteLine(e.Message);
-                throw e;
-            }
-        }
-
         public Script Emit()
         {
             Script script = new Script();
@@ -147,19 +126,6 @@ namespace XASM.Compiler
                 var instr = script.instrs[i];
                 switch (script.instrs[i].opcode)
                 {
-                    case OpCode.jmp:
-                        instr.operands[0] = new Value(lineLabels[instr.operands[0].s]);
-                        break;
-
-                    case OpCode.je:
-                    case OpCode.jne:
-                    case OpCode.jl:
-                    case OpCode.jg:
-                    case OpCode.jle:
-                    case OpCode.jge:
-                        instr.operands[2] = new Value(lineLabels[instr.operands[2].s]);
-                        break;
-
                     case OpCode.call:
                         instr.operands[0].i = GetFunctionIndex(instr.operands[0].s);
                         break;

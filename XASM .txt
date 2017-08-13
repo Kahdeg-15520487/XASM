@@ -1,0 +1,93 @@
+XASM ver 0.1
+
+;Operand : the variable in this assembly language
+;it can be of type:
+    intergerLiteral,
+    floatLiteral,
+    charLiteral,
+    stringLiteral,
+    stackReference,
+    arrayIndex,
+    stackIndex
+    
+;Line label : the destination of flow control instructions
+identifier:
+
+;standard Global variable
+retval						        ;for storing return operand of function
+
+;Stack structure
+<global stack frame>
+0   retval
+    <global variables>
+    <function stack frame>
+        <parameters>
+        <return address / retaddr>
+        <local variables>
+<top of the stack>
+;Instruction set
+
+MOV <destination> , <origin>	        	;copy <origin> to <destination>
+
+;Arithmetic operation
+
+ADD <destination> , <addend>		        ;add <addend> to <destination> and store the sum in <destination>
+SUB <destination> , <subtrahend>        	;substract <subtrahend> from <destination> and store the difference in <destination>
+MUL <destination> , <factor>				;multiply <destination> by <factor> and store the product in <destination>
+DIV <destination> , <divisor>				;divide <destination> by <divisor> and store the fraction in <destination>
+MOD <destination> , <divisor>				;divide <destination> by <divisor> and store the remainder in <destination>
+EXP <destination> , <exponent>				;raise <destination> to the <exponent>th power and store the remainder in <destination>
+NEG <destination> , 						;negate <destination>
+INC <destination> , 						;increase <destination> by 1
+DEC <destination> , 						;decrease <destination> by 1
+
+;Bitwise operation
+
+AND <destination> , <source>				;perform bitwise AND with <destination> and <source>
+OR  <destination> , <source>				;perform bitwise OR with <destination> and <source>
+XOR <destination> , <source>				;perform bitwise XOR with <destination> and <source>
+NOT <destination> , <source>				;perform bitwise NOT with <destination> and <source>
+
+SHL <destination> , <bitcount>				;shift the bit of <destination> to the left by <bitcount>
+SHR <destination> , <bitcount>				;shift the bit of <destination> to the right by <bitcount>
+
+;String operation
+
+CONCAT 	<destination> , <otherstring>		;concatenate <destination> with <otherstring>
+GETCHAR <destination> , <source> , <index>	;get the character in <source> at <index> and store it in <destination>
+SETCHAR	<index> , <destination> , <char>	;set the character in <destination> at <index> with <char>
+
+;Flow control 
+
+JMP <label>					                ;jump uncondionally to <label>
+JE 	<destination> , <condition> , <label>   ;jump to <label> if <destination> is equal to <condition>
+JNE <destination> , <condition> , <label>   ;jump to <label> if <destination> is not equal to <condition>
+JG 	<destination> , <condition> , <label>   ;jump to <label> if <destination> is larger than <condition>
+JL 	<destination> , <condition> , <label>   ;jump to <label> if <destination> is smaller than <condition>
+JGE <destination> , <condition> , <label>   ;jump to <label> if <destination> is larger than or equal to <condition>
+JLE	<destination> , <condition> , <label>   ;jump to <label> if <destination> is smaller than or equal to <condition>
+
+;Stack manipulation
+
+PUSH	<source>			;push <source> on the stack
+POP		<destination>		;pop the top of the stack into <destination>
+
+;Function and HostAPI call
+
+CALL 		<function name>	;call a function
+RET							;return from currently running function
+CALLHOST	<function name>	;call a host api function
+
+;Program manipulation
+
+PAUSE 	<duration>			;pause execution for <duration> ms
+EXIT	<exit code>			;terminate execution and return the exitcode to the environment(vm or sth else)
+
+;Macro
+
+SETSTACKSIZE <stack size>	;set the stacksize for the environment
+
+VAR		identifier			;declare a variable
+VAR		identifier [size]	;declare a array with size
+FUNC	identifier			;declare a function
+PARAM	identifier			;declare a parameter of a function
