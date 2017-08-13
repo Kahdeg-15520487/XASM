@@ -256,6 +256,7 @@ namespace XASM.VirtualMachine
                 case ValType.floatLiteral:
                 case ValType.charLiteral:
                 case ValType.stringLiteral:
+                case ValType.booleanLiteral:
                     return value;
                 case ValType.stackReference:
                     return ResolveStackReference(value);
@@ -723,8 +724,6 @@ namespace XASM.VirtualMachine
                 if (isVerbose)
                 {
                     #region generate instruction log
-
-                    //stacklog.AppendLine(instr.ToString());
                     stacklog.AppendFormat("{0}", instr.opcode.ToString());
                     for (int oc = 0; oc < instr.operands.GetLength(0); oc++)
                     {
@@ -759,7 +758,6 @@ namespace XASM.VirtualMachine
                     }
                     stacklog.AppendLine();
                     stacklog.AppendLine(PrintStack());
-
                     #endregion
                 }
             }

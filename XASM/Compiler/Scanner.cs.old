@@ -204,8 +204,8 @@ public class UTF8Buffer: Buffer {
 public class Scanner {
 	const char EOL = '\n';
 	const int eofSym = 0; /* pdt */
-	const int maxT = 52;
-	const int noSym = 52;
+	const int maxT = 54;
+	const int noSym = 54;
 	char valCh;       // current input character (for token.val)
 
 	public Buffer buffer; // scanner buffer
@@ -326,43 +326,45 @@ public class Scanner {
 
 	void CheckLiteral() {
 		switch (t.val.ToLower()) {
-			case "var": t.kind = 14; break;
-			case "param": t.kind = 15; break;
-			case "mov": t.kind = 16; break;
-			case "add": t.kind = 17; break;
-			case "sub": t.kind = 18; break;
-			case "mul": t.kind = 19; break;
-			case "div": t.kind = 20; break;
-			case "mod": t.kind = 21; break;
-			case "exp": t.kind = 22; break;
-			case "and": t.kind = 23; break;
-			case "or": t.kind = 24; break;
-			case "xor": t.kind = 25; break;
-			case "shl": t.kind = 26; break;
-			case "shr": t.kind = 27; break;
-			case "gettype": t.kind = 28; break;
-			case "concat": t.kind = 29; break;
-			case "call": t.kind = 30; break;
-			case "callhost": t.kind = 31; break;
-			case "push": t.kind = 33; break;
-			case "pop": t.kind = 34; break;
-			case "jmp": t.kind = 35; break;
-			case "neg": t.kind = 36; break;
-			case "inc": t.kind = 37; break;
-			case "dec": t.kind = 38; break;
-			case "not": t.kind = 39; break;
-			case "pause": t.kind = 40; break;
-			case "exit": t.kind = 41; break;
-			case "ret": t.kind = 42; break;
-			case "je": t.kind = 43; break;
-			case "jne": t.kind = 44; break;
-			case "jg": t.kind = 45; break;
-			case "jl": t.kind = 46; break;
-			case "jge": t.kind = 47; break;
-			case "jle": t.kind = 48; break;
-			case "getchar": t.kind = 49; break;
-			case "setchar": t.kind = 50; break;
-			case "func": t.kind = 51; break;
+			case "true": t.kind = 13; break;
+			case "false": t.kind = 14; break;
+			case "var": t.kind = 16; break;
+			case "param": t.kind = 17; break;
+			case "mov": t.kind = 18; break;
+			case "add": t.kind = 19; break;
+			case "sub": t.kind = 20; break;
+			case "mul": t.kind = 21; break;
+			case "div": t.kind = 22; break;
+			case "mod": t.kind = 23; break;
+			case "exp": t.kind = 24; break;
+			case "and": t.kind = 25; break;
+			case "or": t.kind = 26; break;
+			case "xor": t.kind = 27; break;
+			case "shl": t.kind = 28; break;
+			case "shr": t.kind = 29; break;
+			case "gettype": t.kind = 30; break;
+			case "concat": t.kind = 31; break;
+			case "call": t.kind = 32; break;
+			case "callhost": t.kind = 33; break;
+			case "push": t.kind = 35; break;
+			case "pop": t.kind = 36; break;
+			case "jmp": t.kind = 37; break;
+			case "neg": t.kind = 38; break;
+			case "inc": t.kind = 39; break;
+			case "dec": t.kind = 40; break;
+			case "not": t.kind = 41; break;
+			case "pause": t.kind = 42; break;
+			case "exit": t.kind = 43; break;
+			case "ret": t.kind = 44; break;
+			case "je": t.kind = 45; break;
+			case "jne": t.kind = 46; break;
+			case "jg": t.kind = 47; break;
+			case "jl": t.kind = 48; break;
+			case "jge": t.kind = 49; break;
+			case "jle": t.kind = 50; break;
+			case "getchar": t.kind = 51; break;
+			case "setchar": t.kind = 52; break;
+			case "func": t.kind = 53; break;
 			default: break;
 		}
 	}
@@ -444,9 +446,9 @@ public class Scanner {
 				if (ch >= '0' && ch <= '9') {AddCh(); goto case 18;}
 				else {goto case 0;}
 			case 20:
-				{t.kind = 13; break;}
+				{t.kind = 15; break;}
 			case 21:
-				{t.kind = 32; break;}
+				{t.kind = 34; break;}
 
 		}
 		t.val = new String(tval, 0, tlen);

@@ -76,6 +76,7 @@
     <Compile Include="LanguageDefinition\Function.cs" />
     <Compile Include="LanguageDefinition\Instruction.cs" />
     <Compile Include="Compiler\Scope.cs" />
+    <Compile Include="LanguageDefinition\InstructionTypeCheck.cs" />
     <Compile Include="LanguageDefinition\Script.cs" />
     <Compile Include="Compiler\ScriptEmitter.cs" />
     <Compile Include="LanguageDefinition\Value.cs" />

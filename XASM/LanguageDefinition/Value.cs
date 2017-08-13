@@ -1,14 +1,18 @@
-﻿namespace XASM
+﻿using System;
+
+namespace XASM
 {
+    [Flags]
     public enum ValType
     {
-        intergerLiteral,
-        floatLiteral,
-        charLiteral,
-        stringLiteral,
-        stackReference,
-        arrayIndex,
-        stackIndex
+        booleanLiteral = 1,
+        intergerLiteral = 2,
+        floatLiteral = 4,
+        charLiteral = 8,
+        stringLiteral = 16,
+        stackReference = 32,
+        arrayIndex = 64,
+        stackIndex = 128
     }
 
     /// <summary>
@@ -22,6 +26,7 @@
         public char c;
         public string s;
         public int arrid;
+        public bool b;
 
         #region Constructor
         /// <summary>
@@ -100,6 +105,12 @@
             this.arrid = arrayIndex;
         }
 
+        public Value(bool b,ValType t = ValType.booleanLiteral)
+        {
+            type = t;
+            this.b = b;
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Value"/> class from another Value object.
         /// </summary>
@@ -112,6 +123,7 @@
             c = other.c;
             s = other.s;
             arrid = other.arrid;
+            b = other.b;
         }
         #endregion
 
@@ -122,6 +134,7 @@
             c = '\0';
             s = string.Empty;
             arrid = 0;
+            b = false;
         }
 
         /// <summary>
@@ -137,6 +150,7 @@
             c = other.c;
             s = other.s;
             arrid = other.arrid;
+            b = other.b;
         }
 
         /// <summary>
@@ -213,6 +227,9 @@
                     break;
                 case ValType.stackIndex:
                     i = other.i;
+                    break;
+                case ValType.booleanLiteral:
+                    b = other.b;
                     break;
             }
         }
@@ -296,7 +313,6 @@
         {
             return type == ValType.stringLiteral;
         }
-
         #endregion
 
         public override string ToString()
@@ -316,6 +332,8 @@
                     return "<" + i + ">";
                 case ValType.arrayIndex:
                     return "<" + i + ", " + arrid + ">";
+                case ValType.booleanLiteral:
+                    return b.ToString();
                 default:
                     return "null";
             }

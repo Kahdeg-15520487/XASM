@@ -68,7 +68,7 @@ COMMENTS FROM ';' TO lf
 // Set the ignored characters (whitespaces) here, the blank character is
 // ignored by default.
 // Example, add line breaks to the ignore set.
-   IGNORE cr + lf +	whitespace + tab
+IGNORE cr + lf + whitespace + tab
 
 
 PRODUCTIONS
@@ -88,7 +88,9 @@ literal <out Value lit>									(. lit = new Value(); string temp; .)
 															lit = new Value(char.Parse(temp)); .)
 | stringLiteral											(. temp = t.val.Remove(t.val.Length-1,1).Remove(0,1);
 															lit = new Value(emitter.AddString(temp),ValType.stringLiteral);
-														.).
+														.)
+| ("true" | "false")							(. lit = new Value(bool.Parse(t.val)); System.Console.WriteLine(lit.ToString());.)
+														.
 
 identifier<out string name>
 = ident													(. name = t.val;.).

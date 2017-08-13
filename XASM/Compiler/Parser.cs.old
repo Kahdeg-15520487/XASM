@@ -25,7 +25,7 @@ public class Parser {
 	public const int _closeBrace = 10;
 	public const int _leftanglebracket = 11;
 	public const int _rightanglebracket = 12;
-	public const int maxT = 52;
+	public const int maxT = 54;
 
 	const bool T = true;
 	const bool x = false;
@@ -129,7 +129,14 @@ ScriptEmitter emitter;// = new ScriptEmit();
 			temp = t.val.Remove(t.val.Length-1,1).Remove(0,1);
 			lit = new Value(emitter.AddString(temp),ValType.stringLiteral);
 			
-		} else SynErr(53);
+		} else if (la.kind == 13 || la.kind == 14) {
+			if (la.kind == 13) {
+				Get();
+			} else {
+				Get();
+			}
+			lit = new Value(bool.Parse(t.val)); System.Console.WriteLine(lit.ToString();
+		} else SynErr(55);
 	}
 
 	void identifier(out string name) {
@@ -168,7 +175,7 @@ ScriptEmitter emitter;// = new ScriptEmit();
 					identifier(out name2);
 					operand.type = ValType.arrayIndex;
 					operand.s +='|' + name2; 
-				} else SynErr(54);
+				} else SynErr(56);
 				Expect(8);
 			}
 		} else if (la.kind == 11) {
@@ -182,7 +189,7 @@ ScriptEmitter emitter;// = new ScriptEmit();
 			      SemErr("Stack direct index must be of type intergerLiteral");
 			}
 			
-			if (la.kind == 13) {
+			if (la.kind == 15) {
 				Get();
 				literal(out lit2);
 				if (lit2.IsInterger()){
@@ -194,12 +201,12 @@ ScriptEmitter emitter;// = new ScriptEmit();
 				
 			}
 			Expect(12);
-		} else SynErr(55);
+		} else SynErr(57);
 	}
 
 	void variableDeclare(out string name) {
 		
-		Expect(14);
+		Expect(16);
 		identifier(out name);
 		Value lit;
 		currScope.AddVariable(name);
@@ -223,7 +230,7 @@ ScriptEmitter emitter;// = new ScriptEmit();
 	}
 
 	void parameterDeclare(out string name) {
-		Expect(15);
+		Expect(17);
 		identifier(out name);
 		currScope.AddParameter(name);
 		if (verbose)
@@ -242,125 +249,125 @@ ScriptEmitter emitter;// = new ScriptEmit();
 		string name;
 		instr = new Instruction(OpCode.ret);
 		switch (la.kind) {
-		case 16: {
-			Get();
-			operand(out op1);
-			Expect(13);
-			operand(out op2);
-			instr = new Instruction(OpCode.mov, op1 ,op2); 
-			break;
-		}
-		case 17: {
-			Get();
-			operand(out op1);
-			Expect(13);
-			operand(out op2);
-			instr  = new Instruction(OpCode.add, op1,op2); 
-			break;
-		}
 		case 18: {
 			Get();
 			operand(out op1);
-			Expect(13);
+			Expect(15);
 			operand(out op2);
-			instr  = new Instruction(OpCode.sub, op1,op2); 
+			instr = new Instruction(OpCode.mov, op1 ,op2); 
 			break;
 		}
 		case 19: {
 			Get();
 			operand(out op1);
-			Expect(13);
+			Expect(15);
 			operand(out op2);
-			instr  = new Instruction(OpCode.mul, op1,op2); 
+			instr  = new Instruction(OpCode.add, op1,op2); 
 			break;
 		}
 		case 20: {
 			Get();
 			operand(out op1);
-			Expect(13);
+			Expect(15);
 			operand(out op2);
-			instr  = new Instruction(OpCode.div, op1,op2); 
+			instr  = new Instruction(OpCode.sub, op1,op2); 
 			break;
 		}
 		case 21: {
 			Get();
 			operand(out op1);
-			Expect(13);
+			Expect(15);
 			operand(out op2);
-			instr  = new Instruction(OpCode.mod, op1,op2); 
+			instr  = new Instruction(OpCode.mul, op1,op2); 
 			break;
 		}
 		case 22: {
 			Get();
 			operand(out op1);
-			Expect(13);
+			Expect(15);
 			operand(out op2);
-			instr  = new Instruction(OpCode.exp, op1,op2); 
+			instr  = new Instruction(OpCode.div, op1,op2); 
 			break;
 		}
 		case 23: {
 			Get();
 			operand(out op1);
-			Expect(13);
+			Expect(15);
 			operand(out op2);
-			instr  = new Instruction(OpCode.and, op1,op2); 
+			instr  = new Instruction(OpCode.mod, op1,op2); 
 			break;
 		}
 		case 24: {
 			Get();
 			operand(out op1);
-			Expect(13);
+			Expect(15);
 			operand(out op2);
-			instr  = new Instruction(OpCode.or, op1,op2); 
+			instr  = new Instruction(OpCode.exp, op1,op2); 
 			break;
 		}
 		case 25: {
 			Get();
 			operand(out op1);
-			Expect(13);
+			Expect(15);
 			operand(out op2);
-			instr  = new Instruction(OpCode.xor, op1,op2); 
+			instr  = new Instruction(OpCode.and, op1,op2); 
 			break;
 		}
 		case 26: {
 			Get();
 			operand(out op1);
-			Expect(13);
+			Expect(15);
 			operand(out op2);
-			instr  = new Instruction(OpCode.shl, op1,op2); 
+			instr  = new Instruction(OpCode.or, op1,op2); 
 			break;
 		}
 		case 27: {
 			Get();
 			operand(out op1);
-			Expect(13);
+			Expect(15);
 			operand(out op2);
-			instr  = new Instruction(OpCode.shr, op1,op2); 
+			instr  = new Instruction(OpCode.xor, op1,op2); 
 			break;
 		}
 		case 28: {
 			Get();
 			operand(out op1);
-			Expect(13);
+			Expect(15);
 			operand(out op2);
-			instr = new Instruction(OpCode.gettype, op1,op2); 
+			instr  = new Instruction(OpCode.shl, op1,op2); 
 			break;
 		}
 		case 29: {
 			Get();
 			operand(out op1);
-			Expect(13);
+			Expect(15);
+			operand(out op2);
+			instr  = new Instruction(OpCode.shr, op1,op2); 
+			break;
+		}
+		case 30: {
+			Get();
+			operand(out op1);
+			Expect(15);
+			operand(out op2);
+			instr = new Instruction(OpCode.gettype, op1,op2); 
+			break;
+		}
+		case 31: {
+			Get();
+			operand(out op1);
+			Expect(15);
 			operand(out op2);
 			instr = new Instruction(OpCode.concat, op1,op2); 
 			break;
 		}
-		case 30: {
+		case 32: {
 			Get();
 			identifier(out name);
 			instr  = new Instruction(OpCode.call, new Value(name,ValType.intergerLiteral)); 
 			break;
 		}
-		case 31: {
+		case 33: {
 			string name2;
 			Get();
 			identifier(out name);
@@ -381,7 +388,7 @@ ScriptEmitter emitter;// = new ScriptEmit();
 			SemErr("There is more than 1 HAPI library contains " + name);
 			break;
 			} 
-			if (la.kind == 32) {
+			if (la.kind == 34) {
 				Get();
 				identifier(out name2);
 				if (hapilibs.FirstOrDefault(hapilib=>
@@ -395,146 +402,146 @@ ScriptEmitter emitter;// = new ScriptEmit();
 			}
 			break;
 		}
-		case 33: {
+		case 35: {
 			Get();
 			operand(out op1);
 			instr  = new Instruction(OpCode.push, op1); 
 			break;
 		}
-		case 34: {
+		case 36: {
 			Get();
 			operand(out op1);
 			instr  = new Instruction(OpCode.pop, op1); 
 			break;
 		}
-		case 35: {
+		case 37: {
 			Get();
 			identifier(out name);
 			instr  = new Instruction(OpCode.jmp,new Value(name)); 
 			break;
 		}
-		case 36: {
+		case 38: {
 			Get();
 			operand(out op1);
 			instr  = new Instruction(OpCode.neg, op1); 
 			break;
 		}
-		case 37: {
+		case 39: {
 			Get();
 			operand(out op1);
 			instr  = new Instruction(OpCode.inc, op1); 
 			break;
 		}
-		case 38: {
+		case 40: {
 			Get();
 			operand(out op1);
 			instr  = new Instruction(OpCode.dec, op1); 
 			break;
 		}
-		case 39: {
+		case 41: {
 			Get();
 			operand(out op1);
 			instr  = new Instruction(OpCode.not, op1); 
 			break;
 		}
-		case 40: {
+		case 42: {
 			Get();
 			operand(out op1);
 			instr  = new Instruction(OpCode.pause, op1); 
 			break;
 		}
-		case 41: {
+		case 43: {
 			Get();
 			operand(out op1);
 			instr  = new Instruction(OpCode.exit, op1); 
 			break;
 		}
-		case 42: {
-			Get();
-			instr  = new Instruction(OpCode.ret); 
-			break;
-		}
-		case 43: {
-			Get();
-			operand(out op1);
-			Expect(13);
-			operand(out op2);
-			Expect(13);
-			identifier(out name);
-			instr  = new Instruction(OpCode.je,op1,op2,new Value(name)); 
-			break;
-		}
 		case 44: {
 			Get();
-			operand(out op1);
-			Expect(13);
-			operand(out op2);
-			Expect(13);
-			identifier(out name);
-			instr  = new Instruction(OpCode.jne,op1,op2,new Value(name)); 
+			instr  = new Instruction(OpCode.ret); 
 			break;
 		}
 		case 45: {
 			Get();
 			operand(out op1);
-			Expect(13);
+			Expect(15);
 			operand(out op2);
-			Expect(13);
+			Expect(15);
 			identifier(out name);
-			instr  = new Instruction(OpCode.jg,op1,op2,new Value(name)); 
+			instr  = new Instruction(OpCode.je,op1,op2,new Value(name)); 
 			break;
 		}
 		case 46: {
 			Get();
 			operand(out op1);
-			Expect(13);
+			Expect(15);
 			operand(out op2);
-			Expect(13);
+			Expect(15);
 			identifier(out name);
-			instr  = new Instruction(OpCode.jl,op1,op2,new Value(name)); 
+			instr  = new Instruction(OpCode.jne,op1,op2,new Value(name)); 
 			break;
 		}
 		case 47: {
 			Get();
 			operand(out op1);
-			Expect(13);
+			Expect(15);
 			operand(out op2);
-			Expect(13);
+			Expect(15);
 			identifier(out name);
-			instr  = new Instruction(OpCode.jge,op1,op2,new Value(name)); 
+			instr  = new Instruction(OpCode.jg,op1,op2,new Value(name)); 
 			break;
 		}
 		case 48: {
 			Get();
 			operand(out op1);
-			Expect(13);
+			Expect(15);
 			operand(out op2);
-			Expect(13);
+			Expect(15);
 			identifier(out name);
-			instr  = new Instruction(OpCode.jle,op1,op2,new Value(name)); 
+			instr  = new Instruction(OpCode.jl,op1,op2,new Value(name)); 
 			break;
 		}
 		case 49: {
 			Get();
 			operand(out op1);
-			Expect(13);
+			Expect(15);
 			operand(out op2);
-			Expect(13);
-			operand(out op3);
-			instr  = new Instruction(OpCode.getchar,op1,op2,op3); 
+			Expect(15);
+			identifier(out name);
+			instr  = new Instruction(OpCode.jge,op1,op2,new Value(name)); 
 			break;
 		}
 		case 50: {
 			Get();
 			operand(out op1);
-			Expect(13);
+			Expect(15);
 			operand(out op2);
-			Expect(13);
+			Expect(15);
+			identifier(out name);
+			instr  = new Instruction(OpCode.jle,op1,op2,new Value(name)); 
+			break;
+		}
+		case 51: {
+			Get();
+			operand(out op1);
+			Expect(15);
+			operand(out op2);
+			Expect(15);
+			operand(out op3);
+			instr  = new Instruction(OpCode.getchar,op1,op2,op3); 
+			break;
+		}
+		case 52: {
+			Get();
+			operand(out op1);
+			Expect(15);
+			operand(out op2);
+			Expect(15);
 			operand(out op3);
 			instr  = new Instruction(OpCode.setchar,op1,op2,op3); 
 			break;
 		}
-		default: SynErr(56); break;
+		default: SynErr(58); break;
 		}
 		
 	}
@@ -544,16 +551,16 @@ ScriptEmitter emitter;// = new ScriptEmit();
 		List<Instruction> instrs = new List<Instruction>();
 		Dictionary<string,int> lineLabels = new Dictionary<string,int>();
 		int paramCount = 0,varCount = 0,entry = emitter.CurrentLine;
-		Expect(51);
+		Expect(53);
 		identifier(out name);
 		currScope = global.AddScope(name);		//todo check function duplicate
 		funcname = name; 
 		Expect(9);
 		while (StartOf(2)) {
-			if (la.kind == 15) {
+			if (la.kind == 17) {
 				parameterDeclare(out name);
 				
-			} else if (la.kind == 14) {
+			} else if (la.kind == 16) {
 				variableDeclare(out name);
 				
 			} else if (la.kind == 1) {
@@ -679,8 +686,8 @@ ScriptEmitter emitter;// = new ScriptEmit();
 	void XASM() {
 		string name; Function func; currScope = global; 
 		currScope.AddVariable("retval"); 
-		while (la.kind == 14 || la.kind == 51) {
-			if (la.kind == 14) {
+		while (la.kind == 16 || la.kind == 53) {
+			if (la.kind == 16) {
 				variableDeclare(out name);
 				
 			} else {
@@ -718,9 +725,9 @@ ScriptEmitter emitter;// = new ScriptEmit();
 	}
 	
 	bool[,] set = {
-		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x},
-		{x,x,T,T, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x},
-		{x,T,x,x, x,x,x,x, x,x,x,x, x,x,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, x,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,x, x,x}
+		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x},
+		{x,x,T,T, T,T,x,x, x,x,x,x, x,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x},
+		{x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,x,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,T, T,x,x,x}
 
 	};
 } // end Parser
@@ -750,50 +757,52 @@ public class Errors {
 			case 10: s = "closeBrace expected"; break;
 			case 11: s = "leftanglebracket expected"; break;
 			case 12: s = "rightanglebracket expected"; break;
-			case 13: s = "\",\" expected"; break;
-			case 14: s = "\"var\" expected"; break;
-			case 15: s = "\"param\" expected"; break;
-			case 16: s = "\"mov\" expected"; break;
-			case 17: s = "\"add\" expected"; break;
-			case 18: s = "\"sub\" expected"; break;
-			case 19: s = "\"mul\" expected"; break;
-			case 20: s = "\"div\" expected"; break;
-			case 21: s = "\"mod\" expected"; break;
-			case 22: s = "\"exp\" expected"; break;
-			case 23: s = "\"and\" expected"; break;
-			case 24: s = "\"or\" expected"; break;
-			case 25: s = "\"xor\" expected"; break;
-			case 26: s = "\"shl\" expected"; break;
-			case 27: s = "\"shr\" expected"; break;
-			case 28: s = "\"gettype\" expected"; break;
-			case 29: s = "\"concat\" expected"; break;
-			case 30: s = "\"call\" expected"; break;
-			case 31: s = "\"callhost\" expected"; break;
-			case 32: s = "\".\" expected"; break;
-			case 33: s = "\"push\" expected"; break;
-			case 34: s = "\"pop\" expected"; break;
-			case 35: s = "\"jmp\" expected"; break;
-			case 36: s = "\"neg\" expected"; break;
-			case 37: s = "\"inc\" expected"; break;
-			case 38: s = "\"dec\" expected"; break;
-			case 39: s = "\"not\" expected"; break;
-			case 40: s = "\"pause\" expected"; break;
-			case 41: s = "\"exit\" expected"; break;
-			case 42: s = "\"ret\" expected"; break;
-			case 43: s = "\"je\" expected"; break;
-			case 44: s = "\"jne\" expected"; break;
-			case 45: s = "\"jg\" expected"; break;
-			case 46: s = "\"jl\" expected"; break;
-			case 47: s = "\"jge\" expected"; break;
-			case 48: s = "\"jle\" expected"; break;
-			case 49: s = "\"getchar\" expected"; break;
-			case 50: s = "\"setchar\" expected"; break;
-			case 51: s = "\"func\" expected"; break;
-			case 52: s = "??? expected"; break;
-			case 53: s = "invalid literal"; break;
-			case 54: s = "invalid operand"; break;
-			case 55: s = "invalid operand"; break;
-			case 56: s = "invalid instruction"; break;
+			case 13: s = "\"true\" expected"; break;
+			case 14: s = "\"false\" expected"; break;
+			case 15: s = "\",\" expected"; break;
+			case 16: s = "\"var\" expected"; break;
+			case 17: s = "\"param\" expected"; break;
+			case 18: s = "\"mov\" expected"; break;
+			case 19: s = "\"add\" expected"; break;
+			case 20: s = "\"sub\" expected"; break;
+			case 21: s = "\"mul\" expected"; break;
+			case 22: s = "\"div\" expected"; break;
+			case 23: s = "\"mod\" expected"; break;
+			case 24: s = "\"exp\" expected"; break;
+			case 25: s = "\"and\" expected"; break;
+			case 26: s = "\"or\" expected"; break;
+			case 27: s = "\"xor\" expected"; break;
+			case 28: s = "\"shl\" expected"; break;
+			case 29: s = "\"shr\" expected"; break;
+			case 30: s = "\"gettype\" expected"; break;
+			case 31: s = "\"concat\" expected"; break;
+			case 32: s = "\"call\" expected"; break;
+			case 33: s = "\"callhost\" expected"; break;
+			case 34: s = "\".\" expected"; break;
+			case 35: s = "\"push\" expected"; break;
+			case 36: s = "\"pop\" expected"; break;
+			case 37: s = "\"jmp\" expected"; break;
+			case 38: s = "\"neg\" expected"; break;
+			case 39: s = "\"inc\" expected"; break;
+			case 40: s = "\"dec\" expected"; break;
+			case 41: s = "\"not\" expected"; break;
+			case 42: s = "\"pause\" expected"; break;
+			case 43: s = "\"exit\" expected"; break;
+			case 44: s = "\"ret\" expected"; break;
+			case 45: s = "\"je\" expected"; break;
+			case 46: s = "\"jne\" expected"; break;
+			case 47: s = "\"jg\" expected"; break;
+			case 48: s = "\"jl\" expected"; break;
+			case 49: s = "\"jge\" expected"; break;
+			case 50: s = "\"jle\" expected"; break;
+			case 51: s = "\"getchar\" expected"; break;
+			case 52: s = "\"setchar\" expected"; break;
+			case 53: s = "\"func\" expected"; break;
+			case 54: s = "??? expected"; break;
+			case 55: s = "invalid literal"; break;
+			case 56: s = "invalid operand"; break;
+			case 57: s = "invalid operand"; break;
+			case 58: s = "invalid instruction"; break;
 
 			default: s = "error " + n; break;
 		}

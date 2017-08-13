@@ -107,6 +107,9 @@ namespace XASM
                                     case ValType.stackIndex:
                                         operands[i] = new Value(br.ReadInt32(), ValType.stackIndex);
                                         break;
+                                    case ValType.booleanLiteral:
+                                        operands[i] = new Value(br.ReadBoolean());
+                                        break;
                                     default:
                                         break;
                                 }
@@ -246,6 +249,9 @@ namespace XASM
                                     break;
                                 case ValType.stackIndex:
                                     bw.Write(temp.i);
+                                    break;
+                                case ValType.booleanLiteral:
+                                    bw.Write(temp.b);
                                     break;
                                 default:
                                     break;
